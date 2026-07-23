@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Dadathlon Jelgava 2026 — reģistrācija",
+  title: "Dadathlon Latvija — reģistrācija",
   description: "Reģistrācija tēviem un bērniem Dadathlon pasākumam Pasta salā, Jelgavā.",
 };
 

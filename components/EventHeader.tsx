@@ -18,7 +18,7 @@ export default function EventHeader({ compact = false }: { compact?: boolean }) 
           </Link>
           <div className="header-copy">
             <p className="eyebrow">Tēviem un bērniem</p>
-            <h1>{compact ? "Pieteikuma labošana" : "Dadathlon Jelgava 2026"}</h1>
+            <h1>{compact ? "Pieteikuma labošana" : "Dadathlon Latvija"}</h1>
             <p className="event-meta">12. septembris · Pasta sala, Jelgava</p>
           </div>
         </div>

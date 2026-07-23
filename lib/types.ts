@@ -8,7 +8,6 @@ export type ChildSize = (typeof CHILD_SIZES)[number];
 
 export type ChildMember = {
   id: string;
-  name: string;
   age: string;
   shirtSize: ChildSize | "";
 };
@@ -24,6 +23,7 @@ export type RegistrationPayload = {
   fatherShirtSize: AdultSize | "";
   children: ChildMember[];
   consent: boolean;
+  photoConsent: boolean;
   informationConfirmed: boolean;
 };
 

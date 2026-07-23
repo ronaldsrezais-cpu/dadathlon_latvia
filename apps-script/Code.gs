@@ -1,5 +1,5 @@
 /**
- * Dadathlon Jelgava 2026 reģistrācijas backend Google Apps Script.
+ * Dadathlon Latvija reģistrācijas backend Google Apps Script.
  *
  * 1. Izveidojiet Google Sheet.
  * 2. Extensions → Apps Script.
@@ -12,10 +12,10 @@ const CONFIG = {
   SHEET_NAME: 'Registrations',
   SHIRT_LIMIT: 150,
   SITE_URL: 'https://YOUR-SITE.vercel.app',
-  EVENT_NAME: 'Dadathlon Jelgava 2026',
+  EVENT_NAME: 'Dadathlon Latvija',
   EVENT_DATE: '2026. gada 12. septembrī',
   EVENT_PLACE: 'Pasta salā, Jelgavā',
-  CONTACT_EMAIL: 'lsfp@lsfp.lv',
+  CONTACT_EMAIL: 'latvijassportafederacijupadome@gmail.com',
 };
 
 const HEADERS = [
@@ -35,6 +35,7 @@ const HEADERS = [
   'ShirtSlot',
   'Consent',
   'InformationConfirmed',
+  'PhotoConsent',
 ];
 
 const COL = Object.freeze({
@@ -54,6 +55,7 @@ const COL = Object.freeze({
   SHIRT_SLOT: 14,
   CONSENT: 15,
   INFORMATION_CONFIRMED: 16,
+  PHOTO_CONSENT: 17,
 });
 
 function doGet(e) {
@@ -96,6 +98,8 @@ function register_(payload) {
     const sheet = getSheet_();
     const shirtSlot = getNextShirtSlot_(sheet);
     const shirtEligible = shirtSlot <= CONFIG.SHIRT_LIMIT;
+    validateShirtSizes_(payload, shirtEligible);
+
     const code = createUniqueCode_(sheet);
     const now = new Date();
     const children = sanitizeChildren_(payload.children, shirtEligible);
@@ -117,22 +121,23 @@ function register_(payload) {
       shirtEligible ? shirtSlot : '',
       Boolean(payload.consent),
       Boolean(payload.informationConfirmed),
+      Boolean(payload.photoConsent),
     ]);
 
     const editUrl = buildEditUrl_(code);
     trySend_(function () {
       sendConfirmationEmail_({
-      type: 'register',
-      code,
-      editUrl,
-      teamName: clean_(payload.teamName),
-      fatherName: clean_(payload.fatherName),
-      email: clean_(payload.email).toLowerCase(),
-      distance: clean_(payload.distance),
-      children,
-      fatherShirtSize: shirtEligible ? clean_(payload.fatherShirtSize) : '',
-      shirtEligible,
-      shirtSlot: shirtEligible ? shirtSlot : null,
+        type: 'register',
+        code,
+        editUrl,
+        teamName: clean_(payload.teamName),
+        fatherName: clean_(payload.fatherName),
+        email: clean_(payload.email).toLowerCase(),
+        distance: clean_(payload.distance),
+        children,
+        fatherShirtSize: shirtEligible ? clean_(payload.fatherShirtSize) : '',
+        shirtEligible,
+        shirtSlot: shirtEligible ? shirtSlot : null,
       });
     });
 
@@ -167,6 +172,8 @@ function updateRegistration_(payload) {
 
     const shirtEligible = toBoolean_(row[COL.SHIRT_ELIGIBLE - 1]);
     const shirtSlot = shirtEligible ? Number(row[COL.SHIRT_SLOT - 1]) : null;
+    validateShirtSizes_(payload, shirtEligible);
+
     const children = sanitizeChildren_(payload.children, shirtEligible);
     const now = new Date();
 
@@ -187,27 +194,29 @@ function updateRegistration_(payload) {
       shirtEligible ? shirtSlot : '',
       Boolean(payload.consent),
       Boolean(payload.informationConfirmed),
+      Boolean(payload.photoConsent),
     ];
 
     sheet.getRange(found.rowNumber, 1, 1, HEADERS.length).setValues([updatedRow]);
 
+    const editUrl = buildEditUrl_(clean_(payload.code));
     trySend_(function () {
       sendConfirmationEmail_({
-      type: 'update',
-      code: clean_(payload.code),
-      editUrl: buildEditUrl_(clean_(payload.code)),
-      teamName: clean_(payload.teamName),
-      fatherName: clean_(payload.fatherName),
-      email: clean_(payload.email).toLowerCase(),
-      distance: clean_(payload.distance),
-      children,
-      fatherShirtSize: shirtEligible ? clean_(payload.fatherShirtSize) : '',
-      shirtEligible,
-      shirtSlot,
+        type: 'update',
+        code: clean_(payload.code),
+        editUrl,
+        teamName: clean_(payload.teamName),
+        fatherName: clean_(payload.fatherName),
+        email: clean_(payload.email).toLowerCase(),
+        distance: clean_(payload.distance),
+        children,
+        fatherShirtSize: shirtEligible ? clean_(payload.fatherShirtSize) : '',
+        shirtEligible,
+        shirtSlot,
       });
     });
 
-    return { ok: true, code: clean_(payload.code), shirtEligible, shirtSlot };
+    return { ok: true, code: clean_(payload.code), editUrl, shirtEligible, shirtSlot };
   } finally {
     lock.releaseLock();
   }
@@ -266,7 +275,8 @@ function getRegistration_(code) {
   const row = found.values;
   let children = [];
   try {
-    children = JSON.parse(String(row[COL.CHILDREN_JSON - 1] || '[]'));
+    const storedChildren = JSON.parse(String(row[COL.CHILDREN_JSON - 1] || '[]'));
+    children = sanitizeChildren_(storedChildren, toBoolean_(row[COL.SHIRT_ELIGIBLE - 1]));
   } catch (error) {
     children = [];
   }
@@ -286,6 +296,7 @@ function getRegistration_(code) {
       children,
       consent: toBoolean_(row[COL.CONSENT - 1]),
       informationConfirmed: toBoolean_(row[COL.INFORMATION_CONFIRMED - 1]),
+      photoConsent: toBoolean_(row[COL.PHOTO_CONSENT - 1]),
       shirtEligible: toBoolean_(row[COL.SHIRT_ELIGIBLE - 1]),
     },
   };
@@ -297,16 +308,14 @@ function getSheet_() {
 
   if (!sheet) {
     sheet = spreadsheet.insertSheet(CONFIG.SHEET_NAME);
-    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
     sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, HEADERS.length)
-      .setBackground('#073482')
-      .setFontColor('#ffffff')
-      .setFontWeight('bold');
-    sheet.autoResizeColumns(1, HEADERS.length);
-  } else if (sheet.getLastRow() === 0) {
-    sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
   }
+
+  sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
+  sheet.getRange(1, 1, 1, HEADERS.length)
+    .setBackground('#073482')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold');
 
   return sheet;
 }
@@ -349,14 +358,19 @@ function validatePayload_(payload) {
   if (!isValidEmail_(clean_(payload.email))) throw new Error('Nav norādīta derīga e-pasta adrese.');
   if (!clean_(payload.phone)) throw new Error('Nav norādīts tālruņa numurs.');
   if (!Array.isArray(payload.children) || payload.children.length < 1) throw new Error('Jāpievieno vismaz viens bērns.');
-  if (payload.children.some((child) => !clean_(child.name) || !clean_(child.age))) throw new Error('Norādiet katra bērna vārdu un vecumu.');
-  if (!payload.consent || !payload.informationConfirmed) throw new Error('Nav sniegti nepieciešamie apstiprinājumi.');
+  if (payload.children.some((child) => !clean_(child.age))) throw new Error('Norādiet katra bērna vecumu.');
+  if (!payload.consent || !payload.photoConsent || !payload.informationConfirmed) throw new Error('Nav sniegti visi nepieciešamie apstiprinājumi.');
+}
+
+function validateShirtSizes_(payload, shirtEligible) {
+  if (!shirtEligible) return;
+  if (!clean_(payload.fatherShirtSize)) throw new Error('Nav norādīts tēva T-krekla izmērs.');
+  if (payload.children.some((child) => !clean_(child.shirtSize))) throw new Error('Norādiet T-krekla izmēru katram bērnam.');
 }
 
 function sanitizeChildren_(children, keepShirtSizes) {
   return (children || []).map((child) => ({
     id: clean_(child.id) || Utilities.getUuid(),
-    name: clean_(child.name),
     age: clean_(child.age),
     shirtSize: keepShirtSizes ? clean_(child.shirtSize) : '',
   }));
@@ -368,12 +382,12 @@ function sendConfirmationEmail_(data) {
     : `Apstiprinājums dalībai ${CONFIG.EVENT_NAME}`;
 
   const childrenText = data.children
-    .map((child, index) => `${index + 1}. ${child.name}, ${child.age} g. ${data.shirtEligible ? `— izmērs ${child.shirtSize}` : ''}`)
+    .map((child, index) => `${index + 1}. bērns — ${child.age} g.${data.shirtEligible ? `, izmērs ${child.shirtSize}` : ''}`)
     .join('\n');
 
   const shirtText = data.shirtEligible
     ? `Jūsu ģimenei ir rezervēti T-krekli (reģistrācijas vieta Nr. ${data.shirtSlot}).\nTēva izmērs: ${data.fatherShirtSize}\n${childrenText}`
-    : 'Dalība ir apstiprināta. T-kreklu komplektu limits jau ir sasniegts, tādēļ T-kreklu izmēri pieteikumā netiek rezervēti.';
+    : 'Dalība ir apstiprināta. 150 ģimeņu T-kreklu limits jau ir sasniegts, tādēļ T-kreklu izmēri pieteikumā netiek rezervēti.';
 
   const plainBody = [
     `Labdien, ${data.fatherName}!`,
@@ -395,6 +409,10 @@ function sendConfirmationEmail_(data) {
     `Jautājumiem: ${CONFIG.CONTACT_EMAIL}`,
   ].join('\n');
 
+  const htmlChildren = data.children
+    .map((child, index) => `Bērns Nr. ${index + 1} (${escapeHtml_(child.age)} g.): ${escapeHtml_(child.shirtSize)}`)
+    .join('<br>');
+
   const htmlBody = `
     <div style="font-family:Arial,sans-serif;line-height:1.6;color:#172033;max-width:650px">
       <div style="background:#073482;color:#fff;padding:22px 26px;border-radius:14px 14px 0 0">
@@ -412,8 +430,8 @@ function sendConfirmationEmail_(data) {
         </table>
         <div style="background:${data.shirtEligible ? '#eaf0fb' : '#fff0f2'};padding:15px 17px;border-radius:10px;margin:18px 0">
           ${data.shirtEligible
-            ? `<strong style="color:#073482">T-krekli ir rezervēti (vieta Nr. ${data.shirtSlot}).</strong><br>Tēva izmērs: ${escapeHtml_(data.fatherShirtSize)}<br>${data.children.map((child) => `${escapeHtml_(child.name)}: ${escapeHtml_(child.shirtSize)}`).join('<br>')}`
-            : '<strong style="color:#aa1d2f">T-kreklu komplektu limits jau ir sasniegts.</strong><br>Dalība pasākumā ir apstiprināta bez T-kreklu rezervācijas.'}
+            ? `<strong style="color:#073482">T-krekli ir rezervēti (vieta Nr. ${data.shirtSlot}).</strong><br>Tēva izmērs: ${escapeHtml_(data.fatherShirtSize)}<br>${htmlChildren}`
+            : '<strong style="color:#aa1d2f">150 ģimeņu T-kreklu limits jau ir sasniegts.</strong><br>Dalība pasākumā ir apstiprināta bez T-kreklu rezervācijas.'}
         </div>
         <p>Pieteikuma kods: <strong>${escapeHtml_(data.code)}</strong></p>
         <p><a href="${escapeHtml_(data.editUrl)}" style="display:inline-block;background:#e8073c;color:white;text-decoration:none;padding:12px 18px;border-radius:9px;font-weight:bold">Labot vai atsaukt pieteikumu</a></p>

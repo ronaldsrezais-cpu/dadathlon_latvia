@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   ADULT_SIZES,
   CHILD_SIZES,
@@ -12,16 +12,14 @@ import {
   type RegistrationStatus,
 } from "@/lib/types";
 import {
-  demoModeEnabled,
   getRegistration,
   getRegistrationStatus,
   submitRegistration,
 } from "@/lib/api";
-import SizeGuide from "./SizeGuide";
+import { AdultSizeTable, ChildSizeTable } from "./SizeGuide";
 
 const emptyChild = (): ChildMember => ({
   id: crypto.randomUUID(),
-  name: "",
   age: "",
   shirtSize: "",
 });
@@ -59,12 +57,10 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
   const [fatherShirtSize, setFatherShirtSize] = useState<RegistrationPayload["fatherShirtSize"]>("");
   const [children, setChildren] = useState<ChildMember[]>([emptyChild()]);
   const [consent, setConsent] = useState(false);
+  const [photoConsent, setPhotoConsent] = useState(false);
   const [informationConfirmed, setInformationConfirmed] = useState(false);
 
   const canChooseShirts = mode === "edit" ? Boolean(shirtEligible) : status.shirtsAvailable;
-  const remainingSlots = Math.max(status.shirtLimit - status.shirtSlotsTaken, 0);
-
-  const memberCount = useMemo(() => children.length + 1, [children.length]);
 
   useEffect(() => {
     getRegistrationStatus()
@@ -100,6 +96,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
       setFatherShirtSize(registration.fatherShirtSize || "");
       setChildren(registration.children?.length ? registration.children : [emptyChild()]);
       setConsent(Boolean(registration.consent));
+      setPhotoConsent(Boolean(registration.photoConsent));
       setInformationConfirmed(Boolean(registration.informationConfirmed));
       setShirtEligible(Boolean(registration.shirtEligible));
       if (registration.status === "cancelled") {
@@ -138,11 +135,11 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
     if (!email.trim()) return "Norādiet e-pasta adresi.";
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) return "Pārbaudiet e-pasta adresi.";
     if (!phone.trim()) return "Norādiet tālruņa numuru.";
-    if (children.some((child) => !child.name.trim())) return "Norādiet katra bērna vārdu.";
     if (children.some((child) => !child.age.trim())) return "Norādiet katra bērna vecumu.";
     if (canChooseShirts && !fatherShirtSize) return "Izvēlieties tēva T-krekla izmēru.";
     if (canChooseShirts && children.some((child) => !child.shirtSize)) return "Izvēlieties T-krekla izmēru katram bērnam.";
     if (!consent) return "Lai iesniegtu pieteikumu, nepieciešama piekrišana personas datu apstrādei.";
+    if (!photoConsent) return "Apstipriniet, ka esat informēts par fotografēšanu un filmēšanu pasākuma laikā.";
     if (!informationConfirmed) return "Apstipriniet, ka norādītā informācija ir pareiza.";
     return null;
   }
@@ -171,12 +168,12 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
         phone: phone.trim(),
         fatherShirtSize: canChooseShirts ? fatherShirtSize : "",
         children: children.map((child) => ({
-          ...child,
-          name: child.name.trim(),
+          id: child.id,
           age: child.age.trim(),
           shirtSize: canChooseShirts ? child.shirtSize : "",
         })),
         consent,
+        photoConsent,
         informationConfirmed,
       };
 
@@ -189,7 +186,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
         text:
           mode === "edit"
             ? "Izmaiņas ir saglabātas. Atjaunots apstiprinājums nosūtīts uz norādīto e-pastu."
-            : "Paldies! Jūsu ģimene ir reģistrēta Dadathlon Jelgava 2026.",
+            : "Paldies! Jūsu ģimene ir reģistrēta pasākumam Dadathlon Latvija.",
       });
 
       if (mode === "register") {
@@ -220,6 +217,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
         fatherShirtSize,
         children,
         consent,
+        photoConsent,
         informationConfirmed,
       });
       if (!response.ok) throw new Error(response.message || "Pieteikumu neizdevās atsaukt.");
@@ -258,12 +256,6 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
       <div className="shell form-shell">
         <div ref={topRef} tabIndex={-1} />
 
-        {demoModeEnabled() && (
-          <div className="notice notice--demo">
-            Priekšskatījuma režīms: dati tiek glabāti tikai šajā pārlūkā. Pievienojiet Google Apps Script adresi failā <code>.env.local</code>, lai ieslēgtu īsto reģistrāciju.
-          </div>
-        )}
-
         {message && (
           <div className={`notice notice--${message.type}`} role="status">
             <strong>{message.type === "success" ? "Gatavs!" : "Lūdzu, pārbaudiet."}</strong>
@@ -274,7 +266,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                 {result.shirtEligible ? (
                   <p>Jūsu ģimenei ir rezervēti T-krekli{result.shirtSlot ? ` (reģistrācijas vieta Nr. ${result.shirtSlot})` : ""}.</p>
                 ) : (
-                  <p>150 T-kreklu komplektu limits jau ir sasniegts, taču dalība pasākumā ir apstiprināta.</p>
+                  <p>150 ģimeņu T-kreklu limits jau ir sasniegts, taču dalība pasākumā ir apstiprināta.</p>
                 )}
                 {result.editUrl && <a className="inline-link" href={result.editUrl}>Labot vai atsaukt pieteikumu</a>}
               </div>
@@ -291,12 +283,12 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                 <div>
                   <span className="shirt-icon">👕</span>
                   <div>
-                    <strong>{statusLoaded && !status.shirtsAvailable ? "T-kreklu komplekti ir rezervēti" : "T-krekli pirmajām 150 ģimenēm"}</strong>
+                    <strong>{statusLoaded && !status.shirtsAvailable ? "T-kreklu vietas ir aizpildītas" : "Lieliska iespēja agrajiem putniem!"}</strong>
                     <p>
                       {!statusLoaded
-                        ? "Pārbauda pieejamību…"
+                        ? "Pārbauda T-kreklu pieejamību…"
                         : status.shirtsAvailable
-                          ? `Šobrīd atlikušas ${remainingSlots} ģimeņu vietas ar T-krekliem.`
+                          ? "Pirmajām 150 ģimenēm, kas reģistrēsies, tiks nodrošināti pasākuma T-krekli visiem pieteiktajiem komandas dalībniekiem."
                           : "Reģistrācija turpinās, bet T-kreklu izmēri vairs nav jānorāda."}
                     </p>
                   </div>
@@ -309,7 +301,6 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
               <p className="section-kicker">Reģistrācija</p>
               <h2>{mode === "edit" ? "Labojiet ģimenes pieteikumu" : "Piesakiet savu ģimeni"}</h2>
               <p>Komandā piedalās viens tēvs un viens vai vairāki bērni. Visi komandas dalībnieki veic vienu izvēlēto distanci kopā.</p>
-              <div className="member-pill">Komandā pašlaik: <strong>{memberCount} dalībnieki</strong></div>
             </section>
 
             <section className="form-card">
@@ -360,12 +351,15 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
               </div>
 
               {canChooseShirts && (
-                <div className="field-group shirt-field">
-                  <label className="field-label" htmlFor="fatherShirtSize">Tēva T-krekla izmērs <em>*</em></label>
-                  <select id="fatherShirtSize" value={fatherShirtSize} onChange={(e) => setFatherShirtSize(e.target.value as RegistrationPayload["fatherShirtSize"])}>
-                    <option value="">Izvēlieties izmēru</option>
-                    {ADULT_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
-                  </select>
+                <div className="shirt-selection-layout">
+                  <div className="field-group shirt-field">
+                    <label className="field-label" htmlFor="fatherShirtSize">Tēva T-krekla izmērs <em>*</em></label>
+                    <select id="fatherShirtSize" value={fatherShirtSize} onChange={(e) => setFatherShirtSize(e.target.value as RegistrationPayload["fatherShirtSize"])}>
+                      <option value="">Izvēlieties izmēru</option>
+                      {ADULT_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
+                    </select>
+                  </div>
+                  <AdultSizeTable />
                 </div>
               )}
             </section>
@@ -373,7 +367,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
             <section className="form-card">
               <div className="section-heading">
                 <span>3</span>
-                <div><h2>Bērni</h2><p>Pievienojiet katru bērnu, kurš piedalīsies komandā.</p></div>
+                <div><h2>Bērni</h2><p>Norādiet katra bērna vecumu un, ja pieejams, T-krekla izmēru.</p></div>
               </div>
 
               <div className="children-list">
@@ -383,32 +377,34 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                       <h3>Bērns Nr. {index + 1}</h3>
                       {children.length > 1 && <button type="button" className="remove-button" onClick={() => removeChild(child.id)}>Noņemt</button>}
                     </div>
-                    <div className="child-grid">
-                      <div className="field-group field-group--wide">
-                        <label className="field-label" htmlFor={`child-name-${child.id}`}>Bērna vārds <em>*</em></label>
-                        <input id={`child-name-${child.id}`} value={child.name} onChange={(e) => updateChild(child.id, "name", e.target.value)} />
+                    {canChooseShirts ? (
+                      <div className="child-size-layout">
+                        <div className="child-size-fields">
+                          <div className="field-group">
+                            <label className="field-label" htmlFor={`child-age-${child.id}`}>Bērna vecums <em>*</em></label>
+                            <input id={`child-age-${child.id}`} type="number" min="1" max="17" inputMode="numeric" value={child.age} onChange={(e) => updateChild(child.id, "age", e.target.value)} />
+                          </div>
+                          <div className="field-group">
+                            <label className="field-label" htmlFor={`child-size-${child.id}`}>T-krekla izmērs <em>*</em></label>
+                            <select id={`child-size-${child.id}`} value={child.shirtSize} onChange={(e) => updateChild(child.id, "shirtSize", e.target.value)}>
+                              <option value="">Izvēlieties izmēru</option>
+                              {CHILD_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
+                            </select>
+                          </div>
+                        </div>
+                        <ChildSizeTable />
                       </div>
-                      <div className="field-group">
-                        <label className="field-label" htmlFor={`child-age-${child.id}`}>Vecums <em>*</em></label>
+                    ) : (
+                      <div className="field-group child-age-only">
+                        <label className="field-label" htmlFor={`child-age-${child.id}`}>Bērna vecums <em>*</em></label>
                         <input id={`child-age-${child.id}`} type="number" min="1" max="17" inputMode="numeric" value={child.age} onChange={(e) => updateChild(child.id, "age", e.target.value)} />
                       </div>
-                      {canChooseShirts && (
-                        <div className="field-group">
-                          <label className="field-label" htmlFor={`child-size-${child.id}`}>T-krekla izmērs <em>*</em></label>
-                          <select id={`child-size-${child.id}`} value={child.shirtSize} onChange={(e) => updateChild(child.id, "shirtSize", e.target.value)}>
-                            <option value="">Izvēlieties</option>
-                            {CHILD_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
-                          </select>
-                        </div>
-                      )}
-                    </div>
+                    )}
                   </article>
                 ))}
               </div>
 
               <button type="button" className="secondary-button add-child-button" onClick={addChild}>+ Pievienot vēl vienu bērnu</button>
-
-              {canChooseShirts && <SizeGuide />}
             </section>
 
             <section className="form-card">
@@ -421,20 +417,27 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                 <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
                 <span>Piekrītu, ka norādītie personas dati tiek apstrādāti Dadathlon pasākuma organizēšanai un saziņai par dalību. <em>*</em></span>
               </label>
+
+              <label className="checkbox-row">
+                <input type="checkbox" checked={photoConsent} onChange={(e) => setPhotoConsent(e.target.checked)} />
+                <span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv" target="_blank" rel="noreferrer">www.lsfp.lv</a> sabiedrības informēšanas nolūkos. <em>*</em></span>
+              </label>
+
               <label className="checkbox-row">
                 <input type="checkbox" checked={informationConfirmed} onChange={(e) => setInformationConfirmed(e.target.checked)} />
                 <span>Apstiprinu, ka sniegtā informācija ir pareiza un bērna dalībai ir likumiskā pārstāvja piekrišana. <em>*</em></span>
               </label>
 
+              <p className="required-note"><em>*</em> Obligāti aizpildāms lauks.</p>
+
               <div className="submit-row">
                 <button type="submit" className="primary-button primary-button--large" disabled={loading}>
-                  {loading ? "Saglabā…" : mode === "edit" ? "Saglabāt izmaiņas" : "Reģistrēt ģimeni"}
+                  {loading ? "Saglabā…" : mode === "edit" ? "Saglabāt izmaiņas" : "Apstiprināt dalību"}
                 </button>
                 {mode === "edit" && (
-                  <button type="button" className="danger-button" onClick={cancelRegistration} disabled={loading}>Atsaukt dalību</button>
+                  <button type="button" className="danger-button" disabled={loading} onClick={cancelRegistration}>Atsaukt dalību</button>
                 )}
               </div>
-              <p className="required-note"><em>*</em> Obligāti aizpildāms lauks</p>
             </section>
           </form>
         )}

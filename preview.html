@@ -1,10 +1,104 @@
-<!doctype html><html lang="lv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Dadathlon preview</title><link rel="stylesheet" href="app/globals.css"><style>body{font-family:Arial,Helvetica,sans-serif}.preview-note{position:fixed;right:12px;bottom:12px;z-index:10;background:#172033;color:white;padding:8px 12px;border-radius:8px;font-size:12px}.brand-link{width:100%}.header-copy{text-align:left}</style></head><body>
-<header class="site-header"><div class="shell header-inner"><div class="brand-link"><img src="public/dadathlon-logo.png" class="brand-logo"></div><div class="header-copy"><p class="eyebrow">Tēviem un bērniem</p><h1>Dadathlon Jelgava 2026</h1><p class="event-meta">12. septembris · Pasta sala, Jelgava</p></div></div></header>
-<section class="event-strip"><div class="shell event-strip-grid"><div><span>📍</span><strong>Pasta sala</strong><small>Jelgava</small></div><div><span>📅</span><strong>12.09.2026.</strong><small>Sestdiena</small></div><div><span>🏃</span><strong>3 distances</strong><small>500 m · 1 km · 2,5 km</small></div><div><span>👨‍👧‍👦</span><strong>Tēvi + bērni</strong><small>Kopā kustībā</small></div></div></section>
+<!doctype html>
+<html lang="lv">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dadathlon Latvija — dizaina priekšskatījums</title>
+  <link rel="stylesheet" href="app/globals.css">
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif}.brand-link{width:100%}.header-copy{text-align:left}
+    @media(max-width:620px){.header-copy{text-align:center}}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="shell header-inner">
+    <div class="brand-link"><img src="public/dadathlon-logo.png" class="brand-logo" alt="Dadathlon"></div>
+    <div class="header-copy"><p class="eyebrow">Tēviem un bērniem</p><h1>Dadathlon Latvija</h1><p class="event-meta">12. septembris · Pasta sala, Jelgava</p></div>
+  </div>
+</header>
+<section class="event-strip">
+  <div class="shell event-strip-grid">
+    <div><span>📍</span><strong>Pasta sala</strong><small>Jelgava</small></div>
+    <div><span>📅</span><strong>12.09.2026.</strong><small>Sestdiena</small></div>
+    <div><span>🏃</span><strong>3 distances</strong><small>500 m · 1 km · 2,5 km</small></div>
+    <div><span>👨‍👧‍👦</span><strong>Tēvi + bērni</strong><small>Kopā kustībā</small></div>
+  </div>
+</section>
 <main class="main-content"><div class="shell form-shell">
-<section class="shirt-status"><div><span class="shirt-icon">👕</span><div><strong>T-krekli pirmajām 150 ģimenēm</strong><p>Šobrīd atlikušas 87 ģimeņu vietas ar T-krekliem.</p></div></div><span class="status-count">63 / 150</span></section>
-<section class="form-card intro-card"><p class="section-kicker">Reģistrācija</p><h2>Piesakiet savu ģimeni</h2><p>Komandā piedalās viens tēvs un viens vai vairāki bērni. Visi komandas dalībnieki veic vienu izvēlēto distanci kopā.</p><div class="member-pill">Komandā pašlaik: <strong>&nbsp;2 dalībnieki</strong></div></section>
-<section class="form-card"><div class="section-heading"><span>1</span><div><h2>Komandas informācija</h2><p>Izvēlieties komandas nosaukumu un distanci.</p></div></div><div class="field-group"><label class="field-label">Ģimenes / komandas nosaukums <em>*</em></label><input placeholder="Piemēram, Ātrie Ozoli"></div><fieldset class="field-group"><legend class="field-label">Izvēlētā distance <em>*</em></legend><div class="distance-grid"><label class="distance-card distance-card--selected"><span class="distance-icon">👟</span><strong>500 m</strong><small>īsākā distance</small></label><label class="distance-card"><span class="distance-icon">🏃</span><strong>1 km</strong><small>vidējā distance</small></label><label class="distance-card"><span class="distance-icon">🏁</span><strong>2,5 km</strong><small>garākā distance</small></label></div></fieldset></section>
-<section class="form-card"><div class="section-heading"><span>2</span><div><h2>Tēva informācija</h2><p>Uz šo e-pastu nosūtīsim apstiprinājumu un pieteikuma labošanas kodu.</p></div></div><div class="two-column-grid"><div class="field-group field-group--wide"><label class="field-label">Vārds, uzvārds <em>*</em></label><input></div><div class="field-group"><label class="field-label">E-pasts <em>*</em></label><input></div><div class="field-group"><label class="field-label">Tālrunis <em>*</em></label><input placeholder="+371 ..."></div></div><div class="field-group shirt-field"><label class="field-label">Tēva T-krekla izmērs <em>*</em></label><select><option>Izvēlieties izmēru</option></select></div></section>
-<section class="form-card"><div class="section-heading"><span>3</span><div><h2>Bērni</h2><p>Pievienojiet katru bērnu, kurš piedalīsies komandā.</p></div></div><article class="child-card"><div class="child-card-header"><h3>Bērns Nr. 1</h3></div><div class="child-grid"><div class="field-group field-group--wide"><label class="field-label">Bērna vārds <em>*</em></label><input></div><div class="field-group"><label class="field-label">Vecums <em>*</em></label><input></div><div class="field-group"><label class="field-label">T-krekla izmērs <em>*</em></label><select><option>Izvēlieties</option></select></div></div></article><button class="secondary-button add-child-button">+ Pievienot vēl vienu bērnu</button><details class="size-guide" open><summary>T-kreklu izmēru tabulas</summary><div class="size-guide-content"><section><h3>Vīriešu izmēri</h3><img src="public/viriesu-izmeri.png" class="size-chart size-chart--adult"></section><section><h3>Bērnu izmēri</h3><img src="public/bernu-izmeri.png" class="size-chart"></section></div></details></section>
-</div></main><footer class="site-footer"><div class="shell footer-inner"><p><strong>Dadathlon Jelgava 2026</strong><br>12. septembris · Pasta sala, Jelgava</p><p class="footer-note">Jautājumiem par reģistrāciju: lsfp@lsfp.lv</p></div></footer><div class="preview-note">Dizaina priekšskatījums</div></body></html>
+  <section class="shirt-status">
+    <div><span class="shirt-icon">👕</span><div><strong>Lieliska iespēja agrajiem putniem!</strong><p>Pirmajām 150 ģimenēm, kas reģistrēsies, tiks nodrošināti pasākuma T-krekli visiem pieteiktajiem komandas dalībniekiem.</p></div></div>
+    <span class="status-count">63 / 150</span>
+  </section>
+
+  <section class="form-card intro-card"><p class="section-kicker">Reģistrācija</p><h2>Piesakiet savu ģimeni</h2><p>Komandā piedalās viens tēvs un viens vai vairāki bērni. Visi komandas dalībnieki veic vienu izvēlēto distanci kopā.</p></section>
+
+  <section class="form-card">
+    <div class="section-heading"><span>1</span><div><h2>Komandas informācija</h2><p>Izvēlieties komandas nosaukumu un distanci.</p></div></div>
+    <div class="field-group"><label class="field-label">Ģimenes / komandas nosaukums <em>*</em></label><input placeholder="Piemēram, Ātrie Ozoli"></div>
+    <fieldset class="field-group"><legend class="field-label">Izvēlētā distance <em>*</em></legend><div class="distance-grid">
+      <label class="distance-card distance-card--selected"><span class="distance-icon">👟</span><strong>500 m</strong><small>īsākā distance</small></label>
+      <label class="distance-card"><span class="distance-icon">🏃</span><strong>1 km</strong><small>vidējā distance</small></label>
+      <label class="distance-card"><span class="distance-icon">🏁</span><strong>2,5 km</strong><small>garākā distance</small></label>
+    </div></fieldset>
+  </section>
+
+  <section class="form-card">
+    <div class="section-heading"><span>2</span><div><h2>Tēva informācija</h2><p>Uz šo e-pastu nosūtīsim apstiprinājumu un pieteikuma labošanas kodu.</p></div></div>
+    <div class="two-column-grid">
+      <div class="field-group field-group--wide"><label class="field-label">Vārds, uzvārds <em>*</em></label><input></div>
+      <div class="field-group"><label class="field-label">E-pasts <em>*</em></label><input></div>
+      <div class="field-group"><label class="field-label">Tālrunis <em>*</em></label><input placeholder="+371 ..."></div>
+    </div>
+    <div class="shirt-selection-layout">
+      <div class="field-group shirt-field"><label class="field-label">Tēva T-krekla izmērs <em>*</em></label><select><option>Izvēlieties izmēru</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>3XL</option></select></div>
+      <div class="size-reference size-reference--adult"><p class="size-reference-title">Vīriešu izmēri pēc auguma</p><div class="table-scroll"><table class="size-table size-table--adult"><thead><tr><th>Izmērs</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th>3XL</th></tr></thead><tbody><tr><th>Augums, cm</th><td>164</td><td>172</td><td>179</td><td>186</td><td>193</td><td>200</td></tr></tbody></table></div></div>
+    </div>
+  </section>
+
+  <section class="form-card">
+    <div class="section-heading"><span>3</span><div><h2>Bērni</h2><p>Norādiet katra bērna vecumu un, ja pieejams, T-krekla izmēru.</p></div></div>
+    <article class="child-card">
+      <div class="child-card-header"><h3>Bērns Nr. 1</h3></div>
+      <div class="child-size-layout">
+        <div class="child-size-fields">
+          <div class="field-group"><label class="field-label">Bērna vecums <em>*</em></label><input type="number"></div>
+          <div class="field-group"><label class="field-label">T-krekla izmērs <em>*</em></label><select><option>Izvēlieties izmēru</option><option>6XS</option><option>5XS</option><option>4XS</option><option>3XS</option><option>2XS</option><option>XS</option></select></div>
+        </div>
+        <div class="size-reference size-reference--child"><p class="size-reference-title">Bērnu izmēri, cm</p><div class="table-scroll"><table class="size-table size-table--child"><thead><tr><th>Izmērs</th><th>Gadi</th><th>Augums</th><th>Krūtis</th><th>Viduklis</th><th>Gurni</th></tr></thead><tbody>
+          <tr><th>6XS</th><td>4–5</td><td>100–108</td><td>55–57</td><td>54–55</td><td>60–62</td></tr>
+          <tr><th>5XS</th><td>5–6</td><td>109–117</td><td>58–61</td><td>56–57</td><td>63–65</td></tr>
+          <tr><th>4XS</th><td>7–8</td><td>118–128</td><td>62–66</td><td>58–60</td><td>66–68</td></tr>
+          <tr><th>3XS</th><td>9–10</td><td>129–140</td><td>67–72</td><td>61–64</td><td>69–74</td></tr>
+          <tr><th>2XS</th><td>11–12</td><td>141–152</td><td>73–79</td><td>65–68</td><td>75–80</td></tr>
+          <tr><th>XS</th><td>12–14</td><td>153–164</td><td>80–87</td><td>69–72</td><td>81–86</td></tr>
+        </tbody></table></div><p class="size-help">Izmēru izvēlieties galvenokārt pēc bērna auguma un ķermeņa mēriem.</p></div>
+      </div>
+    </article>
+    <button class="secondary-button add-child-button">+ Pievienot vēl vienu bērnu</button>
+  </section>
+
+  <section class="form-card">
+    <div class="section-heading"><span>4</span><div><h2>Apstiprinājums</h2><p>Pārbaudiet informāciju pirms pieteikuma iesniegšanas.</p></div></div>
+    <label class="checkbox-row"><input type="checkbox"><span>Piekrītu, ka norādītie personas dati tiek apstrādāti Dadathlon pasākuma organizēšanai un saziņai par dalību. <em>*</em></span></label>
+    <label class="checkbox-row"><input type="checkbox"><span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv">www.lsfp.lv</a> sabiedrības informēšanas nolūkos. <em>*</em></span></label>
+    <label class="checkbox-row"><input type="checkbox"><span>Apstiprinu, ka sniegtā informācija ir pareiza un bērna dalībai ir likumiskā pārstāvja piekrišana. <em>*</em></span></label>
+    <p class="required-note"><em>*</em> Obligāti aizpildāms lauks.</p>
+    <div class="submit-row"><button class="primary-button primary-button--large">Apstiprināt dalību</button></div>
+  </section>
+</div></main>
+
+<footer class="site-footer"><div class="shell">
+  <section class="organisation-section">
+    <div class="organisation-item"><p>Koordinē</p><div class="organisation-logo-card"><img src="public/lsfp-logo.png" class="organisation-logo organisation-logo--lsfp" alt="LSFP"></div></div>
+    <div class="organisation-item"><p>Organizē</p><div class="organisation-logo-card"><img src="public/jelgava-logo.png" class="organisation-logo organisation-logo--jelgava" alt="Jelgava"></div></div>
+    <div class="organisation-item"><p>Partneri</p><div class="organisation-logo-card organisation-logo-card--dark"><img src="public/daddyhood-logo-white.png" class="organisation-logo organisation-logo--daddyhood" alt="DaddyHood Europe"></div></div>
+  </section>
+  <section class="eu-section">
+    <div class="eu-logo-card"><img src="public/eu-cofunded-lv.png" class="eu-logo" alt="Līdzfinansē Eiropas Savienība"></div>
+    <p class="eu-disclaimer">Līdzfinansē Eiropas Savienība. Tomēr paustie uzskati un viedokļi ir tikai autora(-u) uzskati un viedokļi un ne vienmēr atspoguļo Eiropas Savienības vai Eiropas Izglītības un kultūras izpildaģentūras (EACEA) uzskatus un viedokļus. Ne Eiropas Savienību, ne EACEA nevar saukt pie atbildības par tiem.</p>
+  </section>
+  <div class="footer-inner"><p><strong>Dadathlon Latvija</strong><br>12. septembris · Pasta sala, Jelgava</p><p class="footer-note">Jautājumiem par reģistrāciju: <a href="mailto:latvijassportafederacijupadome@gmail.com">latvijassportafederacijupadome@gmail.com</a></p></div>
+</div></footer>
+</body>
+</html>

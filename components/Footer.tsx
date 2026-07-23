@@ -1,9 +1,43 @@
+import Image from "next/image";
+
+const DISCLAIMER = "Līdzfinansē Eiropas Savienība. Tomēr paustie uzskati un viedokļi ir tikai autora(-u) uzskati un viedokļi un ne vienmēr atspoguļo Eiropas Savienības vai Eiropas Izglītības un kultūras izpildaģentūras (EACEA) uzskatus un viedokļus. Ne Eiropas Savienību, ne EACEA nevar saukt pie atbildības par tiem.";
+
 export default function Footer() {
   return (
     <footer className="site-footer">
-      <div className="shell footer-inner">
-        <p><strong>Dadathlon Jelgava 2026</strong><br />12. septembris · Pasta sala, Jelgava</p>
-        <p className="footer-note">Jautājumiem par reģistrāciju: <a href="mailto:lsfp@lsfp.lv">lsfp@lsfp.lv</a></p>
+      <div className="shell">
+        <section className="organisation-section" aria-label="Pasākuma organizācijas">
+          <div className="organisation-item">
+            <p>Koordinē</p>
+            <div className="organisation-logo-card">
+              <Image src="/lsfp-logo.png" width={900} height={281} alt="Latvijas Sporta federāciju padome" className="organisation-logo organisation-logo--lsfp" />
+            </div>
+          </div>
+          <div className="organisation-item">
+            <p>Organizē</p>
+            <div className="organisation-logo-card">
+              <Image src="/jelgava-logo.png" width={986} height={488} alt="Jelgavas valstspilsētas pašvaldība" className="organisation-logo organisation-logo--jelgava" />
+            </div>
+          </div>
+          <div className="organisation-item">
+            <p>Partneri</p>
+            <div className="organisation-logo-card organisation-logo-card--dark">
+              <Image src="/daddyhood-logo-white.png" width={1000} height={1000} alt="DaddyHood Europe" className="organisation-logo organisation-logo--daddyhood" />
+            </div>
+          </div>
+        </section>
+
+        <section className="eu-section">
+          <div className="eu-logo-card">
+            <Image src="/eu-cofunded-lv.png" width={2048} height={483} alt="Līdzfinansē Eiropas Savienība" className="eu-logo" />
+          </div>
+          <p className="eu-disclaimer">{DISCLAIMER}</p>
+        </section>
+
+        <div className="footer-inner">
+          <p><strong>Dadathlon Latvija</strong><br />12. septembris · Pasta sala, Jelgava</p>
+          <p className="footer-note">Jautājumiem par reģistrāciju: <a href="mailto:latvijassportafederacijupadome@gmail.com">latvijassportafederacijupadome@gmail.com</a></p>
+        </div>
       </div>
     </footer>
   );
