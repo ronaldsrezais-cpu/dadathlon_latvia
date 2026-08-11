@@ -31,6 +31,9 @@ export default function Programme() {
               <strong>10:00–13:00</strong>
               <span>Sporta/aktivitāšu stacijas</span>
             </div>
+            <p className="programme-invitation">
+              Gatavojoties skrējienam, aktivitāšu stacijas varēs izmēģināt ikviens – <strong>mammas</strong>, tēvi, bērni un vecvecāki. Nāciet kopā, izkustieties, izmēģiniet ko jaunu un izbaudiet aktīvu laiku visai ģimenei!
+            </p>
             <div className="activity-grid">
               {activities.map((activity) => (
                 <div className="activity-item" key={activity.name}>

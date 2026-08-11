@@ -131,6 +131,18 @@ fieldset { min-width: 0; padding: 0; border: 0; }
 .programme-time { display: flex; align-items: baseline; gap: 16px; margin-bottom: 20px; }
 .programme-time strong { color: var(--navy); font-size: 1.35rem; letter-spacing: -.02em; }
 .programme-time span { color: var(--ink); font-size: 1.05rem; font-weight: 800; }
+.programme-invitation {
+  margin: -4px 0 22px;
+  max-width: 900px;
+  padding: 14px 17px;
+  border-left: 4px solid var(--red);
+  border-radius: 0 12px 12px 0;
+  background: #fff6f8;
+  color: #3d4656;
+  font-size: .98rem;
+  line-height: 1.6;
+}
+.programme-invitation strong { color: var(--red); }
 .activity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px 18px; }
 .activity-item {
   display: grid;
