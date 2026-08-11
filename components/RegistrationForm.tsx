@@ -4,10 +4,8 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 import {
   ADULT_SIZES,
   CHILD_SIZES,
-  DISTANCES,
   type ApiResponse,
   type ChildMember,
-  type Distance,
   type RegistrationPayload,
   type RegistrationStatus,
 } from "@/lib/types";
@@ -50,7 +48,6 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
   const [editingReady, setEditingReady] = useState(mode === "register");
 
   const [teamName, setTeamName] = useState("");
-  const [distance, setDistance] = useState<Distance | "">("");
   const [fatherName, setFatherName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -89,7 +86,6 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
       setCode(registrationCode.trim());
       setEditingReady(true);
       setTeamName(registration.teamName || "");
-      setDistance(registration.distance || "");
       setFatherName(registration.fatherName || "");
       setEmail(registration.email || "");
       setPhone(registration.phone || "");
@@ -130,7 +126,6 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
 
   function validate(): string | null {
     if (!teamName.trim()) return "Norādiet ģimenes vai komandas nosaukumu.";
-    if (!distance) return "Izvēlieties distanci.";
     if (!fatherName.trim()) return "Norādiet tēva vārdu un uzvārdu.";
     if (!email.trim()) return "Norādiet e-pasta adresi.";
     if (!/^\S+@\S+\.\S+$/.test(email.trim())) return "Pārbaudiet e-pasta adresi.";
@@ -162,7 +157,6 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
         action: mode === "edit" ? "update" : "register",
         code: mode === "edit" ? code : undefined,
         teamName: teamName.trim(),
-        distance,
         fatherName: fatherName.trim(),
         email: email.trim(),
         phone: phone.trim(),
@@ -210,7 +204,6 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
         action: "cancel",
         code,
         teamName,
-        distance,
         fatherName,
         email,
         phone,
@@ -300,13 +293,13 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
             <section className="form-card intro-card">
               <p className="section-kicker">Reģistrācija</p>
               <h2>{mode === "edit" ? "Labojiet ģimenes pieteikumu" : "Piesakiet savu ģimeni"}</h2>
-              <p>Komandā piedalās viens tēvs un viens vai vairāki bērni. Visi komandas dalībnieki veic vienu izvēlēto distanci kopā.</p>
+              <p>Komandā piedalās viens tēvs un viens vai vairāki bērni. Visi komandas dalībnieki distanci veic kopā. Precīzs distances garums tiks paziņots pasākuma informācijā.</p>
             </section>
 
             <section className="form-card">
               <div className="section-heading">
                 <span>1</span>
-                <div><h2>Komandas informācija</h2><p>Izvēlieties komandas nosaukumu un distanci.</p></div>
+                <div><h2>Komandas informācija</h2><p>Norādiet ģimenes / komandas nosaukumu.</p></div>
               </div>
 
               <div className="field-group">
@@ -314,19 +307,6 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                 <input id="teamName" value={teamName} onChange={(e) => setTeamName(e.target.value)} placeholder="Piemēram, Ātrie Ozoli" autoComplete="organization" />
               </div>
 
-              <fieldset className="field-group">
-                <legend className="field-label">Izvēlētā distance <em>*</em></legend>
-                <div className="distance-grid">
-                  {DISTANCES.map((option, index) => (
-                    <label key={option} className={`distance-card ${distance === option ? "distance-card--selected" : ""}`}>
-                      <input type="radio" name="distance" value={option} checked={distance === option} onChange={() => setDistance(option)} />
-                      <span className="distance-icon">{index === 0 ? "👟" : index === 1 ? "🏃" : "🏁"}</span>
-                      <strong>{option}</strong>
-                      <small>{index === 0 ? "īsākā distance" : index === 1 ? "vidējā distance" : "garākā distance"}</small>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
             </section>
 
             <section className="form-card">

@@ -70,7 +70,6 @@ export function ChildSizeTable() {
           </tbody>
         </table>
       </div>
-      <p className="size-help">Izmēru izvēlieties galvenokārt pēc bērna auguma un ķermeņa mēriem.</p>
     </div>
   );
 }

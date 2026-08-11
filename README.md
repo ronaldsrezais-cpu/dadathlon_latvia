@@ -5,7 +5,7 @@ Next.js reģistrācijas vietne pasākumam **Dadathlon Latvija**, kas notiks **20
 ## Iekļautā funkcionalitāte
 
 - ģimenes/komandas nosaukums;
-- distances izvēle: 500 m, 1 km vai 2,5 km;
+- viena kopīga distance tēviem un bērniem; precīzs distances garums tiks paziņots pasākuma informācijā;
 - tēva vārds, e-pasts un tālrunis;
 - neierobežoti dinamiski pievienojami bērni;
 - par katru bērnu tiek prasīts tikai vecums, nevis vārds;
@@ -63,7 +63,7 @@ NEXT_PUBLIC_APPS_SCRIPT_URL=https://script.google.com/macros/s/DEPLOYMENT_ID/exe
 
 9. Pārstartējiet vietni vai atkārtoti izvietojiet to Vercel.
 
-Apps Script automātiski sagatavos lapu `Registrations` ar vajadzīgajām kolonnām. Atjauninātajā versijā ir pievienota kolonna `PhotoConsent`; esošas reģistrāciju lapas dati netiek pārbīdīti.
+Apps Script automātiski sagatavos lapu `Registrations` ar vajadzīgajām kolonnām. Ja lapā ir agrāk izmantotā kolonna `Distance`, skripts to automātiski noņems, saglabājot pārējo reģistrācijas datu struktūru.
 
 ## 3. Izvietošana Vercel
 

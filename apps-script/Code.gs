@@ -15,6 +15,7 @@ const CONFIG = {
   EVENT_NAME: 'Dadathlon Latvija',
   EVENT_DATE: '2026. gada 12. septembrī',
   EVENT_PLACE: 'Pasta salā, Jelgavā',
+  DISTANCE_INFO: 'Distances garums tiks paziņots atsevišķi pasākuma informācijā.',
   CONTACT_EMAIL: 'latvijassportafederacijupadome@gmail.com',
 };
 
@@ -24,7 +25,6 @@ const HEADERS = [
   'Code',
   'Status',
   'TeamName',
-  'Distance',
   'FatherName',
   'Email',
   'Phone',
@@ -44,18 +44,17 @@ const COL = Object.freeze({
   CODE: 3,
   STATUS: 4,
   TEAM_NAME: 5,
-  DISTANCE: 6,
-  FATHER_NAME: 7,
-  EMAIL: 8,
-  PHONE: 9,
-  CHILDREN_COUNT: 10,
-  FATHER_SHIRT_SIZE: 11,
-  CHILDREN_JSON: 12,
-  SHIRT_ELIGIBLE: 13,
-  SHIRT_SLOT: 14,
-  CONSENT: 15,
-  INFORMATION_CONFIRMED: 16,
-  PHOTO_CONSENT: 17,
+  FATHER_NAME: 6,
+  EMAIL: 7,
+  PHONE: 8,
+  CHILDREN_COUNT: 9,
+  FATHER_SHIRT_SIZE: 10,
+  CHILDREN_JSON: 11,
+  SHIRT_ELIGIBLE: 12,
+  SHIRT_SLOT: 13,
+  CONSENT: 14,
+  INFORMATION_CONFIRMED: 15,
+  PHOTO_CONSENT: 16,
 });
 
 function doGet(e) {
@@ -110,7 +109,6 @@ function register_(payload) {
       code,
       'active',
       clean_(payload.teamName),
-      clean_(payload.distance),
       clean_(payload.fatherName),
       clean_(payload.email).toLowerCase(),
       clean_(payload.phone),
@@ -133,7 +131,6 @@ function register_(payload) {
         teamName: clean_(payload.teamName),
         fatherName: clean_(payload.fatherName),
         email: clean_(payload.email).toLowerCase(),
-        distance: clean_(payload.distance),
         children,
         fatherShirtSize: shirtEligible ? clean_(payload.fatherShirtSize) : '',
         shirtEligible,
@@ -183,7 +180,6 @@ function updateRegistration_(payload) {
       clean_(payload.code),
       'active',
       clean_(payload.teamName),
-      clean_(payload.distance),
       clean_(payload.fatherName),
       clean_(payload.email).toLowerCase(),
       clean_(payload.phone),
@@ -208,7 +204,6 @@ function updateRegistration_(payload) {
         teamName: clean_(payload.teamName),
         fatherName: clean_(payload.fatherName),
         email: clean_(payload.email).toLowerCase(),
-        distance: clean_(payload.distance),
         children,
         fatherShirtSize: shirtEligible ? clean_(payload.fatherShirtSize) : '',
         shirtEligible,
@@ -288,7 +283,6 @@ function getRegistration_(code) {
       code: String(row[COL.CODE - 1] || ''),
       status: String(row[COL.STATUS - 1] || ''),
       teamName: String(row[COL.TEAM_NAME - 1] || ''),
-      distance: String(row[COL.DISTANCE - 1] || ''),
       fatherName: String(row[COL.FATHER_NAME - 1] || ''),
       email: String(row[COL.EMAIL - 1] || ''),
       phone: String(row[COL.PHONE - 1] || ''),
@@ -309,6 +303,11 @@ function getSheet_() {
   if (!sheet) {
     sheet = spreadsheet.insertSheet(CONFIG.SHEET_NAME);
     sheet.setFrozenRows(1);
+  } else if (sheet.getLastColumn() > 0) {
+    // Vienreizēja migrācija no agrākās formas, kurā bija atsevišķa Distance kolonna.
+    const currentHeaders = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+    const distanceColumnIndex = currentHeaders.indexOf('Distance');
+    if (distanceColumnIndex !== -1) sheet.deleteColumn(distanceColumnIndex + 1);
   }
 
   sheet.getRange(1, 1, 1, HEADERS.length).setValues([HEADERS]);
@@ -353,7 +352,6 @@ function createUniqueCode_(sheet) {
 
 function validatePayload_(payload) {
   if (!clean_(payload.teamName)) throw new Error('Nav norādīts komandas nosaukums.');
-  if (!['500 m', '1 km', '2,5 km'].includes(clean_(payload.distance))) throw new Error('Nav izvēlēta derīga distance.');
   if (!clean_(payload.fatherName)) throw new Error('Nav norādīts tēva vārds un uzvārds.');
   if (!isValidEmail_(clean_(payload.email))) throw new Error('Nav norādīta derīga e-pasta adrese.');
   if (!clean_(payload.phone)) throw new Error('Nav norādīts tālruņa numurs.');
@@ -398,7 +396,7 @@ function sendConfirmationEmail_(data) {
     `Datums: ${CONFIG.EVENT_DATE}`,
     `Vieta: ${CONFIG.EVENT_PLACE}`,
     `Komanda: ${data.teamName}`,
-    `Distance: ${data.distance}`,
+    CONFIG.DISTANCE_INFO,
     `Bērnu skaits: ${data.children.length}`,
     '',
     shirtText,
@@ -425,7 +423,7 @@ function sendConfirmationEmail_(data) {
           <tr><td style="padding:7px 0;color:#637083">Datums</td><td style="padding:7px 0"><strong>${escapeHtml_(CONFIG.EVENT_DATE)}</strong></td></tr>
           <tr><td style="padding:7px 0;color:#637083">Vieta</td><td style="padding:7px 0"><strong>${escapeHtml_(CONFIG.EVENT_PLACE)}</strong></td></tr>
           <tr><td style="padding:7px 0;color:#637083">Komanda</td><td style="padding:7px 0"><strong>${escapeHtml_(data.teamName)}</strong></td></tr>
-          <tr><td style="padding:7px 0;color:#637083">Distance</td><td style="padding:7px 0"><strong>${escapeHtml_(data.distance)}</strong></td></tr>
+          <tr><td style="padding:7px 0;color:#637083">Distance</td><td style="padding:7px 0"><strong>Viena kopīga distance; garums tiks paziņots pasākuma informācijā.</strong></td></tr>
           <tr><td style="padding:7px 0;color:#637083">Bērnu skaits</td><td style="padding:7px 0"><strong>${data.children.length}</strong></td></tr>
         </table>
         <div style="background:${data.shirtEligible ? '#eaf0fb' : '#fff0f2'};padding:15px 17px;border-radius:10px;margin:18px 0">
