@@ -15,7 +15,7 @@ const CONFIG = {
   EVENT_NAME: 'Dadathlon Latvija',
   EVENT_DATE: '2026. gada 12. septembrī',
   EVENT_PLACE: 'Pasta salā, Jelgavā',
-  DISTANCE_INFO: 'Distances garums tiks paziņots atsevišķi pasākuma informācijā.',
+  DISTANCE_INFO: 'Distance: 1 km.',
   CONTACT_EMAIL: 'latvijassportafederacijupadome@gmail.com',
 };
 
@@ -423,7 +423,7 @@ function sendConfirmationEmail_(data) {
           <tr><td style="padding:7px 0;color:#637083">Datums</td><td style="padding:7px 0"><strong>${escapeHtml_(CONFIG.EVENT_DATE)}</strong></td></tr>
           <tr><td style="padding:7px 0;color:#637083">Vieta</td><td style="padding:7px 0"><strong>${escapeHtml_(CONFIG.EVENT_PLACE)}</strong></td></tr>
           <tr><td style="padding:7px 0;color:#637083">Komanda</td><td style="padding:7px 0"><strong>${escapeHtml_(data.teamName)}</strong></td></tr>
-          <tr><td style="padding:7px 0;color:#637083">Distance</td><td style="padding:7px 0"><strong>Viena kopīga distance; garums tiks paziņots pasākuma informācijā.</strong></td></tr>
+          <tr><td style="padding:7px 0;color:#637083">Distance</td><td style="padding:7px 0"><strong>1 km</strong></td></tr>
           <tr><td style="padding:7px 0;color:#637083">Bērnu skaits</td><td style="padding:7px 0"><strong>${data.children.length}</strong></td></tr>
         </table>
         <div style="background:${data.shirtEligible ? '#eaf0fb' : '#fff0f2'};padding:15px 17px;border-radius:10px;margin:18px 0">

@@ -1,19 +1,19 @@
 const activities = [
-  "Vieglatlētika",
-  "Tēvu un dēlu laivu izbrauciens",
-  "Basketbola metieni",
-  "Hokejs",
-  "Spēka stacija",
-  "Orientēšanās",
-  "Futbols",
-  "Volejbols",
-  "Sporta tūrisms",
-  "Taekvondo",
-  "Nūjošana",
-  "Ķer un servē",
-  "Zumba",
-  "Petanka",
-  "Šķēršļu josla",
+  { name: "Vieglatlētika", icon: "🏃" },
+  { name: "Tēvu un dēlu laivu izbrauciens", icon: "🚣" },
+  { name: "Basketbola metieni", icon: "🏀" },
+  { name: "Hokejs", icon: "🏒" },
+  { name: "Spēka stacija", icon: "💪" },
+  { name: "Orientēšanās", icon: "🧭" },
+  { name: "Futbols", icon: "⚽" },
+  { name: "Volejbols", icon: "🏐" },
+  { name: "Sporta tūrisms", icon: "🥾" },
+  { name: "Taekvondo", icon: "🥋" },
+  { name: "Nūjošana", icon: "🚶" },
+  { name: "Ķer un servē", icon: "🎾" },
+  { name: "Zumba", icon: "💃" },
+  { name: "Petanka", icon: "🎯" },
+  { name: "Šķēršļu josla", icon: "🚧" },
 ];
 
 export default function Programme() {
@@ -33,9 +33,9 @@ export default function Programme() {
             </div>
             <div className="activity-grid">
               {activities.map((activity) => (
-                <div className="activity-item" key={activity}>
-                  <span aria-hidden="true">•</span>
-                  <p>{activity}</p>
+                <div className="activity-item" key={activity.name}>
+                  <span className="activity-icon" aria-hidden="true">{activity.icon}</span>
+                  <p>{activity.name}</p>
                 </div>
               ))}
             </div>
@@ -51,7 +51,7 @@ export default function Programme() {
             <div className="schedule-item schedule-item--highlight">
               <div className="schedule-time">12:00</div>
               <div>
-                <strong>Skrējiens ar šķēršļiem</strong>
+                <strong>Skrējiens ar šķēršļiem · 1 km</strong>
               </div>
             </div>
           </div>

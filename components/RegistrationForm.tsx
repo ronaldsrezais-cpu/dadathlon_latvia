@@ -245,7 +245,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
   }
 
   return (
-    <main className="main-content">
+    <main className="main-content" id={mode === "register" ? "registracija" : undefined}>
       <div className="shell form-shell">
         <div ref={topRef} tabIndex={-1} />
 
@@ -293,7 +293,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
             <section className="form-card intro-card">
               <p className="section-kicker">Reģistrācija</p>
               <h2>{mode === "edit" ? "Labojiet ģimenes pieteikumu" : "Piesakiet savu ģimeni"}</h2>
-              <p>Komandā piedalās viens tēvs un viens vai vairāki bērni. Visi komandas dalībnieki distanci veic kopā. Precīzs distances garums tiks paziņots pasākuma informācijā.</p>
+              <p>Komandā piedalās viens tēvs un viens vai vairāki bērni. Visi komandas dalībnieki 1 km distanci veic kopā.</p>
             </section>
 
             <section className="form-card">

@@ -5,7 +5,7 @@ Next.js reģistrācijas vietne pasākumam **Dadathlon Latvija**, kas notiks **20
 ## Iekļautā funkcionalitāte
 
 - ģimenes/komandas nosaukums;
-- viena kopīga distance tēviem un bērniem; precīzs distances garums tiks paziņots pasākuma informācijā;
+- viena kopīga 1 km distance tēviem un bērniem;
 - tēva vārds, e-pasts un tālrunis;
 - neierobežoti dinamiski pievienojami bērni;
 - par katru bērnu tiek prasīts tikai vecums, nevis vārds;
