@@ -38,6 +38,13 @@ export default function Footer() {
           <p><strong>Dadathlon Latvija</strong><br />12. septembris · 10:00–13:00 · Pasta sala, Jelgava</p>
           <p className="footer-note">Jautājumiem par reģistrāciju: <a href="mailto:latvijassportafederacijupadome@gmail.com">latvijassportafederacijupadome@gmail.com</a></p>
         </div>
+
+        <section className="about-project" aria-labelledby="about-project-title">
+          <h2 id="about-project-title">Par projektu</h2>
+          <p><strong>Dadathlon Latvija</strong> ir daļa no starptautiska Erasmus+ Sport projekta <strong>“Dadathlon sport events – promoting family sports through recreational races for fathers and children”</strong>, kura mērķis ir veicināt ģimeņu fizisko aktivitāti, īpaši iedrošinot tēvus būt aktīviem kopā ar saviem bērniem un ar savu piemēru palīdzēt veidot veselīga un aktīva dzīvesveida paradumus.</p>
+          <p>Dadathlon nav tikai skrējiens – tā ir iespēja tēviem un bērniem <strong>kustēties, piedzīvot un pavadīt kvalitatīvu laiku kopā</strong>, stiprinot savstarpējo saikni un radot kopīgas atmiņas.</p>
+          <p>Dadathlon Latvija pasākums tiek īstenots, sadarbojoties <strong>Latvijas Sporta federāciju padomei, Jelgavas valstspilsētas pašvaldībai un DaddyHood Europe</strong>.</p>
+        </section>
       </div>
     </footer>
   );
