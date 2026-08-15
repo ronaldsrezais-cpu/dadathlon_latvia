@@ -1,6 +1,9 @@
 import type { ApiResponse, RegistrationPayload, RegistrationStatus } from "./types";
 
-const ENDPOINT = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL?.trim() || "";
+const DEFAULT_APPS_SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbwkXt6N5L1tXgkRgc_JBdna4yDw8v9zxrrfogfKDLUIggEQTqdy8JigMcvxYB8NW4PN/exec";
+
+const ENDPOINT = process.env.NEXT_PUBLIC_APPS_SCRIPT_URL?.trim() || DEFAULT_APPS_SCRIPT_URL;
 const DEMO_KEY = "dadathlon-demo-registrations";
 
 function isDemoMode() {
@@ -79,6 +82,7 @@ export async function submitRegistration(payload: RegistrationPayload): Promise<
         shirtEligible,
         shirtSlot: item.shirtSlot,
         editUrl: `${window.location.origin}/edit?code=${encodeURIComponent(code)}`,
+        emailSent: false,
       };
     }
 
@@ -101,6 +105,9 @@ export async function submitRegistration(payload: RegistrationPayload): Promise<
       ok: true,
       code: String(payload.code),
       shirtEligible: Boolean(registrations[index].shirtEligible),
+      shirtSlot: Number(registrations[index].shirtSlot) || null,
+      editUrl: `${window.location.origin}/edit?code=${encodeURIComponent(String(payload.code))}`,
+      emailSent: false,
     };
   }
 

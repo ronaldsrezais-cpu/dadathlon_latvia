@@ -3,17 +3,21 @@
  *
  * 1. Izveidojiet Google Sheet.
  * 2. Extensions → Apps Script.
- * 3. Iekopējiet šo failu un nomainiet CONFIG.SITE_URL.
- * 4. Deploy → New deployment → Web app.
- * 5. Execute as: Me; Who has access: Anyone.
+ * 3. Iekopējiet šo failu. CONFIG.SITE_URL jau ir iestatīts uz Dadathlon Latvija publisko vietni.
+ * 4. Palaidiet setupDadathlon() vienu reizi un apstipriniet piekļuves.
+ * 5. Deploy → New deployment → Web app.
+ * 6. Execute as: Me; Who has access: Anyone.
  */
 
 const CONFIG = {
   SHEET_NAME: 'Registrations',
+  REPORT_SHEET_NAME: 'Reģistrētās ģimenes',
+  CHILD_SHEET_NAME: 'Bērni',
   SHIRT_LIMIT: 150,
-  SITE_URL: 'https://YOUR-SITE.vercel.app',
+  SITE_URL: 'https://dadathlon-latvia.vercel.app',
   EVENT_NAME: 'Dadathlon Latvija',
   EVENT_DATE: '2026. gada 12. septembrī',
+  EVENT_TIME: '10:00–13:00',
   EVENT_PLACE: 'Pasta salā, Jelgavā',
   DISTANCE_INFO: 'Distance: 1 km.',
   CONTACT_EMAIL: 'latvijassportafederacijupadome@gmail.com',
@@ -56,6 +60,41 @@ const COL = Object.freeze({
   INFORMATION_CONFIRMED: 15,
   PHOTO_CONSENT: 16,
 });
+
+const REPORT_HEADERS = [
+  'Reģistrācijas datums',
+  'Pēdējās izmaiņas',
+  'Pieteikuma kods',
+  'Statuss',
+  'Ģimenes / komandas nosaukums',
+  'Tēva vārds un uzvārds',
+  'E-pasts',
+  'Tālrunis',
+  'Bērnu skaits',
+  'Kopējais dalībnieku skaits',
+  'Tēva T-krekla izmērs',
+  'T-krekli piešķirti',
+  'T-kreklu reģistrācijas vieta',
+  'Bērnu vecumi un T-kreklu izmēri',
+  'Personas datu apstrāde',
+  'Foto/video informācija apstiprināta',
+  'Informācija pareiza / pārstāvja piekrišana',
+];
+
+const CHILD_HEADERS = [
+  'Pieteikuma kods',
+  'Statuss',
+  'Ģimenes / komandas nosaukums',
+  'Bērns Nr.',
+  'Vecums',
+  'T-krekla izmērs',
+];
+
+function setupDadathlon() {
+  const sheet = getSheet_();
+  syncReportingSheets_(sheet);
+  return 'Dadathlon reģistrācijas lapas ir sagatavotas.';
+}
 
 function doGet(e) {
   try {
@@ -122,8 +161,10 @@ function register_(payload) {
       Boolean(payload.photoConsent),
     ]);
 
+    syncReportingSheets_(sheet);
+
     const editUrl = buildEditUrl_(code);
-    trySend_(function () {
+    const emailSent = trySend_(function () {
       sendConfirmationEmail_({
         type: 'register',
         code,
@@ -144,6 +185,7 @@ function register_(payload) {
       editUrl,
       shirtEligible,
       shirtSlot: shirtEligible ? shirtSlot : null,
+      emailSent,
     };
   } finally {
     lock.releaseLock();
@@ -194,9 +236,10 @@ function updateRegistration_(payload) {
     ];
 
     sheet.getRange(found.rowNumber, 1, 1, HEADERS.length).setValues([updatedRow]);
+    syncReportingSheets_(sheet);
 
     const editUrl = buildEditUrl_(clean_(payload.code));
-    trySend_(function () {
+    const emailSent = trySend_(function () {
       sendConfirmationEmail_({
         type: 'update',
         code: clean_(payload.code),
@@ -211,7 +254,7 @@ function updateRegistration_(payload) {
       });
     });
 
-    return { ok: true, code: clean_(payload.code), editUrl, shirtEligible, shirtSlot };
+    return { ok: true, code: clean_(payload.code), editUrl, shirtEligible, shirtSlot, emailSent };
   } finally {
     lock.releaseLock();
   }
@@ -230,12 +273,13 @@ function cancelRegistration_(payload) {
 
     sheet.getRange(found.rowNumber, COL.UPDATED_AT).setValue(new Date());
     sheet.getRange(found.rowNumber, COL.STATUS).setValue('cancelled');
+    syncReportingSheets_(sheet);
 
     const email = String(found.values[COL.EMAIL - 1] || '');
     const teamName = String(found.values[COL.TEAM_NAME - 1] || '');
-    if (email) trySend_(function () { sendCancellationEmail_(email, teamName, clean_(payload.code)); });
+    const emailSent = email ? trySend_(function () { sendCancellationEmail_(email, teamName, clean_(payload.code)); }) : false;
 
-    return { ok: true, message: 'Pieteikums ir atsaukts.' };
+    return { ok: true, message: 'Pieteikums ir atsaukts.', emailSent };
   } finally {
     lock.releaseLock();
   }
@@ -319,6 +363,128 @@ function getSheet_() {
   return sheet;
 }
 
+function syncReportingSheets_(technicalSheet) {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const rows = getDataRows_(technicalSheet);
+  const reportRows = [];
+  const childRows = [];
+
+  rows.forEach((row) => {
+    const code = String(row[COL.CODE - 1] || '');
+    const statusRaw = String(row[COL.STATUS - 1] || '').toLowerCase();
+    const status = statusRaw === 'cancelled' ? 'Atsaukts' : 'Aktīvs';
+    const teamName = String(row[COL.TEAM_NAME - 1] || '');
+    const shirtEligible = toBoolean_(row[COL.SHIRT_ELIGIBLE - 1]);
+    let children = [];
+
+    try {
+      children = JSON.parse(String(row[COL.CHILDREN_JSON - 1] || '[]')) || [];
+    } catch (error) {
+      children = [];
+    }
+
+    const childrenSummary = children
+      .map((child) => `${clean_(child.age)} g.${shirtEligible && clean_(child.shirtSize) ? ` – ${clean_(child.shirtSize)}` : ''}`)
+      .join('; ');
+
+    reportRows.push([
+      row[COL.CREATED_AT - 1],
+      row[COL.UPDATED_AT - 1],
+      code,
+      status,
+      teamName,
+      row[COL.FATHER_NAME - 1],
+      row[COL.EMAIL - 1],
+      row[COL.PHONE - 1],
+      Number(row[COL.CHILDREN_COUNT - 1]) || children.length,
+      (Number(row[COL.CHILDREN_COUNT - 1]) || children.length) + 1,
+      row[COL.FATHER_SHIRT_SIZE - 1],
+      shirtEligible ? 'Jā' : 'Nē',
+      row[COL.SHIRT_SLOT - 1],
+      childrenSummary,
+      toBoolean_(row[COL.CONSENT - 1]) ? 'Jā' : 'Nē',
+      toBoolean_(row[COL.PHOTO_CONSENT - 1]) ? 'Jā' : 'Nē',
+      toBoolean_(row[COL.INFORMATION_CONFIRMED - 1]) ? 'Jā' : 'Nē',
+    ]);
+
+    children.forEach((child, index) => {
+      childRows.push([
+        code,
+        status,
+        teamName,
+        index + 1,
+        clean_(child.age),
+        shirtEligible ? clean_(child.shirtSize) : '',
+      ]);
+    });
+  });
+
+  const reportSheet = getOrCreateReportSheet_(spreadsheet, CONFIG.REPORT_SHEET_NAME, REPORT_HEADERS);
+  const childSheet = getOrCreateReportSheet_(spreadsheet, CONFIG.CHILD_SHEET_NAME, CHILD_HEADERS);
+
+  writeReportData_(reportSheet, REPORT_HEADERS, reportRows, [1, 2]);
+  writeReportData_(childSheet, CHILD_HEADERS, childRows, []);
+
+  // Pārskatāmā tabula lietotājam, tehnisko lapu var turēt paslēptu.
+  try {
+    technicalSheet.hideSheet();
+  } catch (error) {
+    console.log('Tehnisko lapu neizdevās paslēpt: ' + safeErrorMessage_(error));
+  }
+}
+
+function getOrCreateReportSheet_(spreadsheet, name, headers) {
+  let sheet = spreadsheet.getSheetByName(name);
+  if (!sheet) sheet = spreadsheet.insertSheet(name);
+  sheet.setFrozenRows(1);
+  sheet.getRange(1, 1, 1, headers.length).setValues([headers]);
+  return sheet;
+}
+
+function writeReportData_(sheet, headers, rows, dateColumns) {
+  const existingFilter = sheet.getFilter();
+  if (existingFilter) existingFilter.remove();
+
+  const lastRow = sheet.getLastRow();
+  const lastCol = Math.max(sheet.getLastColumn(), headers.length);
+  if (lastRow > 1 && lastCol > 0) {
+    sheet.getRange(2, 1, lastRow - 1, lastCol).clearContent();
+  }
+
+  sheet.getRange(1, 1, 1, headers.length)
+    .setValues([headers])
+    .setBackground('#073482')
+    .setFontColor('#ffffff')
+    .setFontWeight('bold')
+    .setWrap(true);
+
+  if (rows.length) {
+    sheet.getRange(2, 1, rows.length, headers.length).setValues(rows);
+    sheet.getRange(1, 1, rows.length + 1, headers.length).createFilter();
+
+    dateColumns.forEach((columnNumber) => {
+      sheet.getRange(2, columnNumber, rows.length, 1).setNumberFormat('dd.mm.yyyy hh:mm');
+    });
+
+    // Atsauktos pieteikumus padara vizuāli vieglāk pamanāmus.
+    const statusColumn = headers.indexOf('Statuss') + 1;
+    if (statusColumn > 0) {
+      const statusValues = sheet.getRange(2, statusColumn, rows.length, 1).getValues();
+      statusValues.forEach((statusRow, index) => {
+        if (String(statusRow[0]) === 'Atsaukts') {
+          sheet.getRange(index + 2, 1, 1, headers.length).setBackground('#f2f3f5').setFontColor('#6a7280');
+        }
+      });
+    }
+  }
+
+  sheet.autoResizeColumns(1, headers.length);
+  for (let column = 1; column <= headers.length; column++) {
+    const width = sheet.getColumnWidth(column);
+    sheet.setColumnWidth(column, Math.min(Math.max(width, 90), 260));
+  }
+}
+
 function getDataRows_(sheet) {
   const lastRow = sheet.getLastRow();
   if (lastRow < 2) return [];
@@ -376,27 +542,33 @@ function sanitizeChildren_(children, keepShirtSizes) {
 
 function sendConfirmationEmail_(data) {
   const subject = data.type === 'update'
-    ? `Atjaunots pieteikums dalībai ${CONFIG.EVENT_NAME}`
-    : `Apstiprinājums dalībai ${CONFIG.EVENT_NAME}`;
+    ? `Dadathlon Latvija – pieteikums atjaunots`
+    : `Dadathlon Latvija – reģistrācija apstiprināta`;
 
   const childrenText = data.children
-    .map((child, index) => `${index + 1}. bērns — ${child.age} g.${data.shirtEligible ? `, izmērs ${child.shirtSize}` : ''}`)
+    .map((child, index) => `${index + 1}. bērns — ${child.age} g.${data.shirtEligible ? `, T-krekla izmērs ${child.shirtSize}` : ''}`)
     .join('\n');
 
   const shirtText = data.shirtEligible
-    ? `Jūsu ģimenei ir rezervēti T-krekli (reģistrācijas vieta Nr. ${data.shirtSlot}).\nTēva izmērs: ${data.fatherShirtSize}\n${childrenText}`
-    : 'Dalība ir apstiprināta. 150 ģimeņu T-kreklu limits jau ir sasniegts, tādēļ T-kreklu izmēri pieteikumā netiek rezervēti.';
+    ? `Jūsu ģimenei ir rezervēti pasākuma T-krekli (reģistrācijas vieta Nr. ${data.shirtSlot}).\nTēva izmērs: ${data.fatherShirtSize}\n${childrenText}`
+    : 'Dalība ir apstiprināta. 150 ģimeņu T-kreklu limits jau ir sasniegts, tādēļ T-krekli šim pieteikumam netiek rezervēti.';
 
   const plainBody = [
     `Labdien, ${data.fatherName}!`,
     '',
-    data.type === 'update' ? 'Jūsu Dadathlon pieteikuma izmaiņas ir saglabātas.' : 'Jūsu ģimenes dalība Dadathlon pasākumā ir apstiprināta.',
+    data.type === 'update'
+      ? 'Jūsu Dadathlon Latvija pieteikuma izmaiņas ir veiksmīgi saglabātas.'
+      : 'Paldies par reģistrāciju! Jūsu ģimenes dalība Dadathlon Latvija pasākumā ir apstiprināta.',
     '',
     `Pasākums: ${CONFIG.EVENT_NAME}`,
     `Datums: ${CONFIG.EVENT_DATE}`,
+    `Laiks: ${CONFIG.EVENT_TIME}`,
     `Vieta: ${CONFIG.EVENT_PLACE}`,
-    `Komanda: ${data.teamName}`,
-    CONFIG.DISTANCE_INFO,
+    '11:45 – iesildīšanās skrējienam',
+    '12:00 – 1 km skrējiens ar šķēršļiem',
+    'Katrs dalībnieks, kas piedalīsies skrējienā, saņems medaļu.',
+    '',
+    `Ģimene / komanda: ${data.teamName}`,
     `Bērnu skaits: ${data.children.length}`,
     '',
     shirtText,
@@ -404,36 +576,42 @@ function sendConfirmationEmail_(data) {
     `Pieteikuma kods: ${data.code}`,
     `Labot vai atsaukt pieteikumu: ${data.editUrl}`,
     '',
-    `Jautājumiem: ${CONFIG.CONTACT_EMAIL}`,
+    `Jautājumiem par reģistrāciju: ${CONFIG.CONTACT_EMAIL}`,
   ].join('\n');
 
   const htmlChildren = data.children
-    .map((child, index) => `Bērns Nr. ${index + 1} (${escapeHtml_(child.age)} g.): ${escapeHtml_(child.shirtSize)}`)
+    .map((child, index) => `Bērns Nr. ${index + 1}: ${escapeHtml_(child.age)} g.${data.shirtEligible ? ` · ${escapeHtml_(child.shirtSize)}` : ''}`)
     .join('<br>');
 
   const htmlBody = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#172033;max-width:650px">
+    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#172033;max-width:650px;margin:auto">
       <div style="background:#073482;color:#fff;padding:22px 26px;border-radius:14px 14px 0 0">
         <h1 style="margin:0;font-size:24px">${escapeHtml_(CONFIG.EVENT_NAME)}</h1>
       </div>
       <div style="border:1px solid #dce3ed;border-top:0;padding:26px;border-radius:0 0 14px 14px">
         <p>Labdien, <strong>${escapeHtml_(data.fatherName)}</strong>!</p>
-        <p>${data.type === 'update' ? 'Jūsu pieteikuma izmaiņas ir saglabātas.' : 'Jūsu ģimenes dalība ir apstiprināta.'}</p>
+        <p>${data.type === 'update' ? 'Jūsu pieteikuma izmaiņas ir veiksmīgi saglabātas.' : 'Paldies par reģistrāciju! Jūsu ģimenes dalība ir apstiprināta.'}</p>
         <table style="border-collapse:collapse;width:100%;margin:18px 0">
           <tr><td style="padding:7px 0;color:#637083">Datums</td><td style="padding:7px 0"><strong>${escapeHtml_(CONFIG.EVENT_DATE)}</strong></td></tr>
+          <tr><td style="padding:7px 0;color:#637083">Laiks</td><td style="padding:7px 0"><strong>${escapeHtml_(CONFIG.EVENT_TIME)}</strong></td></tr>
           <tr><td style="padding:7px 0;color:#637083">Vieta</td><td style="padding:7px 0"><strong>${escapeHtml_(CONFIG.EVENT_PLACE)}</strong></td></tr>
-          <tr><td style="padding:7px 0;color:#637083">Komanda</td><td style="padding:7px 0"><strong>${escapeHtml_(data.teamName)}</strong></td></tr>
-          <tr><td style="padding:7px 0;color:#637083">Distance</td><td style="padding:7px 0"><strong>1 km</strong></td></tr>
+          <tr><td style="padding:7px 0;color:#637083">Ģimene / komanda</td><td style="padding:7px 0"><strong>${escapeHtml_(data.teamName)}</strong></td></tr>
+          <tr><td style="padding:7px 0;color:#637083">Skrējiens</td><td style="padding:7px 0"><strong>1 km ar šķēršļiem</strong></td></tr>
           <tr><td style="padding:7px 0;color:#637083">Bērnu skaits</td><td style="padding:7px 0"><strong>${data.children.length}</strong></td></tr>
         </table>
+        <div style="background:#f4f7fb;padding:15px 17px;border-radius:10px;margin:18px 0">
+          <strong style="color:#073482">11:45 – iesildīšanās · 12:00 – skrējiens</strong><br>
+          Katrs dalībnieks, kas piedalīsies skrējienā, saņems medaļu.
+        </div>
         <div style="background:${data.shirtEligible ? '#eaf0fb' : '#fff0f2'};padding:15px 17px;border-radius:10px;margin:18px 0">
           ${data.shirtEligible
             ? `<strong style="color:#073482">T-krekli ir rezervēti (vieta Nr. ${data.shirtSlot}).</strong><br>Tēva izmērs: ${escapeHtml_(data.fatherShirtSize)}<br>${htmlChildren}`
             : '<strong style="color:#aa1d2f">150 ģimeņu T-kreklu limits jau ir sasniegts.</strong><br>Dalība pasākumā ir apstiprināta bez T-kreklu rezervācijas.'}
         </div>
         <p>Pieteikuma kods: <strong>${escapeHtml_(data.code)}</strong></p>
+        <p style="color:#637083;font-size:13px">Saglabājiet pieteikuma kodu. Ar to varēsiet labot vai atsaukt pieteikumu.</p>
         <p><a href="${escapeHtml_(data.editUrl)}" style="display:inline-block;background:#e8073c;color:white;text-decoration:none;padding:12px 18px;border-radius:9px;font-weight:bold">Labot vai atsaukt pieteikumu</a></p>
-        <p style="color:#637083;font-size:13px;margin-top:25px">Jautājumiem: ${escapeHtml_(CONFIG.CONTACT_EMAIL)}</p>
+        <p style="color:#637083;font-size:13px;margin-top:25px">Jautājumiem par reģistrāciju: ${escapeHtml_(CONFIG.CONTACT_EMAIL)}</p>
       </div>
     </div>`;
 
@@ -442,31 +620,35 @@ function sendConfirmationEmail_(data) {
     subject,
     body: plainBody,
     htmlBody,
-    name: 'Dadathlon',
+    name: 'Dadathlon Latvija',
+    replyTo: CONFIG.CONTACT_EMAIL,
   });
 }
 
 function sendCancellationEmail_(email, teamName, code) {
   MailApp.sendEmail({
     to: email,
-    subject: `Dalība ${CONFIG.EVENT_NAME} ir atsaukta`,
+    subject: `Dadathlon Latvija – dalība atsaukta`,
     body: [
       'Labdien!',
       '',
-      `Komandas “${teamName}” pieteikums dalībai ${CONFIG.EVENT_NAME} ir atsaukts.`,
+      `Ģimenes / komandas “${teamName}” pieteikums dalībai ${CONFIG.EVENT_NAME} ir atsaukts.`,
       `Pieteikuma kods: ${code}`,
       '',
-      `Jautājumiem: ${CONFIG.CONTACT_EMAIL}`,
+      `Jautājumiem par reģistrāciju: ${CONFIG.CONTACT_EMAIL}`,
     ].join('\n'),
-    name: 'Dadathlon',
+    name: 'Dadathlon Latvija',
+    replyTo: CONFIG.CONTACT_EMAIL,
   });
 }
 
 function trySend_(callback) {
   try {
     callback();
+    return true;
   } catch (error) {
     console.error('E-pastu neizdevās nosūtīt: ' + safeErrorMessage_(error));
+    return false;
   }
 }
 

@@ -39,6 +39,7 @@ export type ApiResponse = {
   editUrl?: string;
   shirtEligible?: boolean;
   shirtSlot?: number | null;
+  emailSent?: boolean;
   registration?: RegistrationPayload & {
     shirtEligible: boolean;
     status: string;

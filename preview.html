@@ -115,7 +115,7 @@
     <label class="checkbox-row"><input type="checkbox"><span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv">www.lsfp.lv</a> sabiedrības informēšanas nolūkos. <em>*</em></span></label>
     <label class="checkbox-row"><input type="checkbox"><span>Apstiprinu, ka sniegtā informācija ir pareiza un bērna dalībai ir likumiskā pārstāvja piekrišana. <em>*</em></span></label>
     <p class="required-note"><em>*</em> Obligāti aizpildāms lauks.</p>
-    <div class="submit-row"><button class="primary-button primary-button--large">Apstiprināt dalību</button></div>
+    <div class="submit-row"><button id="preview-submit" type="button" class="primary-button primary-button--large">Apstiprināt dalību</button></div>
   </section>
 </div></main>
 
@@ -137,5 +137,30 @@
     <p>Dadathlon Latvija pasākums tiek īstenots, sadarbojoties <strong>Latvijas Sporta federāciju padomei, Jelgavas valstspilsētas pašvaldībai un DaddyHood Europe</strong>.</p>
   </section>
 </div></footer>
+
+<div id="preview-success-modal" class="success-modal-backdrop" role="presentation" style="display:none">
+  <section class="success-modal" role="dialog" aria-modal="true" aria-labelledby="preview-success-title">
+    <button id="preview-modal-close-x" type="button" class="success-modal-close" aria-label="Aizvērt">×</button>
+    <div class="success-modal-icon" aria-hidden="true">✓</div>
+    <p class="success-modal-kicker">Reģistrācija pabeigta</p>
+    <h2 id="preview-success-title">Reģistrācija veiksmīga!</h2>
+    <p class="success-modal-lead">Paldies! Jūsu ģimene ir reģistrēta Dadathlon Latvija pasākumam.</p>
+    <div class="success-email-status success-email-status--sent"><span>✉️</span><p>Apstiprinājuma e-pasts ir nosūtīts uz <strong>piemers@epasts.lv</strong>.</p></div>
+    <div class="success-code-card"><span>Pieteikuma kods</span><strong>DAD-7K2P4Q</strong><small>Saglabājiet šo kodu — tas būs nepieciešams, lai labotu vai atsauktu pieteikumu.</small></div>
+    <div class="success-modal-details"><p><strong>👕 T-krekli rezervēti.</strong> Jūsu ģimene ir starp pirmajām 150 reģistrētajām ģimenēm.</p><p><strong>🏅 Atgādinājums:</strong> katrs dalībnieks, kas piedalīsies 1 km skrējienā ar šķēršļiem, saņems medaļu.</p></div>
+    <div class="success-modal-actions"><button id="preview-modal-close" type="button" class="primary-button">Aizvērt</button><a class="secondary-button success-edit-link" href="#registracija">Labot pieteikumu</a></div>
+  </section>
+</div>
+<script>
+  const modal = document.getElementById('preview-success-modal');
+  const openModal = () => { modal.style.display = 'grid'; document.body.style.overflow = 'hidden'; };
+  const closeModal = () => { modal.style.display = 'none'; document.body.style.overflow = ''; };
+  document.getElementById('preview-submit').addEventListener('click', openModal);
+  document.getElementById('preview-modal-close').addEventListener('click', closeModal);
+  document.getElementById('preview-modal-close-x').addEventListener('click', closeModal);
+  modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeModal(); });
+</script>
+
 </body>
 </html>
