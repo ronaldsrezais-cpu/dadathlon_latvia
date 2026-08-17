@@ -1,25 +1,28 @@
 const adultSizes = [
-  { size: "S", height: "164" },
-  { size: "M", height: "172" },
-  { size: "L", height: "179" },
-  { size: "XL", height: "186" },
-  { size: "XXL", height: "193" },
-  { size: "3XL", height: "200" },
+  { size: "XS", width: "47", height: "67" },
+  { size: "S", width: "50", height: "69" },
+  { size: "M", width: "53", height: "72" },
+  { size: "L", width: "56", height: "74" },
+  { size: "XL", width: "59", height: "76" },
+  { size: "XXL", width: "62", height: "79" },
+  { size: "3XL", width: "65", height: "82" },
+  { size: "4XL", width: "68", height: "85" },
+  { size: "5XL", width: "71", height: "88" },
 ];
 
 const childSizes = [
-  { size: "6XS", age: "4–5", height: "100–108", chest: "55–57", waist: "54–55", hips: "60–62" },
-  { size: "5XS", age: "5–6", height: "109–117", chest: "58–61", waist: "56–57", hips: "63–65" },
-  { size: "4XS", age: "7–8", height: "118–128", chest: "62–66", waist: "58–60", hips: "66–68" },
-  { size: "3XS", age: "9–10", height: "129–140", chest: "67–72", waist: "61–64", hips: "69–74" },
-  { size: "2XS", age: "11–12", height: "141–152", chest: "73–79", waist: "65–68", hips: "75–80" },
-  { size: "XS", age: "12–14", height: "153–164", chest: "80–87", waist: "69–72", hips: "81–86" },
+  { size: "2", width: "31", height: "42" },
+  { size: "4", width: "34", height: "45" },
+  { size: "6", width: "37", height: "48" },
+  { size: "8", width: "40", height: "51" },
+  { size: "10", width: "43", height: "55" },
+  { size: "12", width: "46", height: "59" },
 ];
 
 export function AdultSizeTable() {
   return (
-    <div className="size-reference size-reference--adult" aria-label="Vīriešu T-kreklu izmēru tabula">
-      <p className="size-reference-title">Vīriešu izmēri pēc auguma</p>
+    <div className="size-reference size-reference--adult" aria-label="Pieaugušo T-kreklu izmēru tabula">
+      <p className="size-reference-title">Pieaugušo T-kreklu izmēri</p>
       <div className="table-scroll">
         <table className="size-table size-table--adult">
           <thead>
@@ -30,7 +33,11 @@ export function AdultSizeTable() {
           </thead>
           <tbody>
             <tr>
-              <th>Augums, cm</th>
+              <th>Platums, cm</th>
+              {adultSizes.map((item) => <td key={item.size}>{item.width}</td>)}
+            </tr>
+            <tr>
+              <th>Garums, cm</th>
               {adultSizes.map((item) => <td key={item.size}>{item.height}</td>)}
             </tr>
           </tbody>
@@ -43,28 +50,22 @@ export function AdultSizeTable() {
 export function ChildSizeTable() {
   return (
     <div className="size-reference size-reference--child" aria-label="Bērnu T-kreklu izmēru tabula">
-      <p className="size-reference-title">Bērnu izmēri, cm</p>
+      <p className="size-reference-title">Bērnu T-kreklu izmēri</p>
       <div className="table-scroll">
         <table className="size-table size-table--child">
           <thead>
             <tr>
               <th>Izmērs</th>
-              <th>Gadi</th>
-              <th>Augums</th>
-              <th>Krūtis</th>
-              <th>Viduklis</th>
-              <th>Gurni</th>
+              <th>Platums, cm</th>
+              <th>Garums, cm</th>
             </tr>
           </thead>
           <tbody>
             {childSizes.map((item) => (
               <tr key={item.size}>
                 <th>{item.size}</th>
-                <td>{item.age}</td>
+                <td>{item.width}</td>
                 <td>{item.height}</td>
-                <td>{item.chest}</td>
-                <td>{item.waist}</td>
-                <td>{item.hips}</td>
               </tr>
             ))}
           </tbody>

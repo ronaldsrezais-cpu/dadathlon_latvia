@@ -322,9 +322,10 @@ select:focus { border-color: var(--navy); box-shadow: 0 0 0 4px rgba(7, 52, 130,
 .size-table thead th { color: white; background: #3f69ae; font-weight: 800; }
 .size-table tbody th { color: var(--navy); background: #edf2f8; font-weight: 800; }
 .size-table tbody tr:nth-child(even) td { background: #f4f6f9; }
+.size-table--adult { min-width: 690px; }
 .size-table--adult th,
 .size-table--adult td { padding: 9px 7px; }
-.size-table--child { min-width: 570px; }
+.size-table--child { min-width: 360px; }
 .size-help { margin: 0; padding: 8px 11px; color: var(--muted); background: #f8faff; font-size: .72rem; }
 
 .primary-button,
