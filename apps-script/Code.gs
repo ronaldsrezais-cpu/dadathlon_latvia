@@ -609,7 +609,7 @@ function sendConfirmationEmail_(data) {
         Latvijas Sporta federāciju padome.
       </p>
 
-      <p><img src="cid:lsfpLogo" alt="Latvijas Sporta federāciju padome" style="display:block;width:150px;max-width:150px;height:auto;border:0"></p>
+      <p><img src="cid:lsfpLogo" alt="Latvijas Sporta federāciju padome" style="display:block;width:75px;max-width:75px;height:auto;border:0"></p>
     </div>`;
 
   MailApp.sendEmail({
