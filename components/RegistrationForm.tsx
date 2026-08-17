@@ -392,11 +392,20 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                               <label className="field-label" htmlFor={`child-size-${child.id}`}>T-krekla izmērs <em>*</em></label>
                               <select id={`child-size-${child.id}`} value={child.shirtSize} onChange={(e) => updateChild(child.id, "shirtSize", e.target.value)}>
                                 <option value="">Izvēlieties izmēru</option>
-                                {CHILD_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
+                                <optgroup label="Bērnu izmēri">
+                                  {CHILD_SIZES.map((size) => <option key={`child-${size}`} value={size}>{size}</option>)}
+                                </optgroup>
+                                <optgroup label="Pieaugušo izmēri">
+                                  {ADULT_SIZES.map((size) => <option key={`adult-${size}`} value={size}>{size}</option>)}
+                                </optgroup>
                               </select>
+                              <p className="field-help">Bērnam iespējams izvēlēties arī pieaugušo T-krekla izmēru.</p>
                             </div>
                           </div>
-                          <ChildSizeTable />
+                          <div className="child-size-guides">
+                            <ChildSizeTable />
+                            <AdultSizeTable />
+                          </div>
                         </div>
                       ) : (
                         <div className="field-group child-age-only">

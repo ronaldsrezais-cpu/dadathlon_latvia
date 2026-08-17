@@ -4,10 +4,12 @@ export const CHILD_SIZES = ["2", "4", "6", "8", "10", "12"] as const;
 export type AdultSize = (typeof ADULT_SIZES)[number];
 export type ChildSize = (typeof CHILD_SIZES)[number];
 
+export type ChildShirtSize = ChildSize | AdultSize;
+
 export type ChildMember = {
   id: string;
   age: string;
-  shirtSize: ChildSize | "";
+  shirtSize: ChildShirtSize | "";
 };
 
 export type RegistrationPayload = {
