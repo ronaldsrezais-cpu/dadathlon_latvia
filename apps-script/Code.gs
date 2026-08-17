@@ -557,7 +557,7 @@ function sendConfirmationEmail_(data) {
     `Datums: ${CONFIG.EVENT_DATE}`,
     'Aktivitātes visiem: no 10:30 līdz 13:00',
     `Vieta: ${CONFIG.EVENT_PLACE}`,
-    'Skrējiens: 1 km ar šķēršļiem',
+    'Skrējiens: 1 km ar uzdevumiem',
     `Bērnu skaits: ${data.children.length}`,
     '',
     'Skrējiena programma:',
@@ -587,7 +587,7 @@ function sendConfirmationEmail_(data) {
         <strong>Datums:</strong> ${escapeHtml_(CONFIG.EVENT_DATE)}<br>
         <strong>Aktivitātes visiem:</strong> no 10:30 līdz 13:00<br>
         <strong>Vieta:</strong> ${escapeHtml_(CONFIG.EVENT_PLACE)}<br>
-        <strong>Skrējiens:</strong> 1 km ar šķēršļiem<br>
+        <strong>Skrējiens:</strong> 1 km ar uzdevumiem<br>
         <strong>Bērnu skaits:</strong> ${data.children.length}
       </p>
 

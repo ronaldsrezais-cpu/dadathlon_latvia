@@ -107,7 +107,7 @@ E-pastā ir:
 
 - pasākuma datums, laiks un vieta;
 - 11:45 iesildīšanās;
-- 12:00 — 1 km skrējiens ar šķēršļiem;
+- 12:00 — 1 km skrējiens ar uzdevumiem;
 - informācija par medaļu;
 - ģimenes / komandas nosaukums;
 - bērnu skaits;

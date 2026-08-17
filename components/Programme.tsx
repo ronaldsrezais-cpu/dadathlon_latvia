@@ -6,13 +6,11 @@ const activities = [
   { name: "Spēka stacija", icon: "💪" },
   { name: "Orientēšanās", icon: "🧭" },
   { name: "Futbols", icon: "⚽" },
-  { name: "Volejbols", icon: "🏐" },
   { name: "Sporta tūrisms", icon: "🥾" },
-  { name: "Taekvondo", icon: "🥋" },
+  { name: "Tekvondo", icon: "🥋" },
   { name: "Nūjošana", icon: "🚶" },
-  { name: "Ķer un servē", icon: "🎾" },
+  { name: "Ķer un servē", icon: "🏐" },
   { name: "Zumba", icon: "💃" },
-  { name: "Petanks", icon: "🎯" },
   { name: "Šķēršļu josla", icon: "🚧" },
 ];
 
@@ -53,7 +51,7 @@ export default function Programme() {
             <div className="schedule-item schedule-item--highlight">
               <div className="schedule-time">12:00</div>
               <div>
-                <strong>Skrējiens ar šķēršļiem · 1 km</strong>
+                <strong>Skrējiens ar uzdevumiem · 1 km</strong>
               </div>
             </div>
           </div>

@@ -29,7 +29,7 @@ export default function EventHeader({ compact = false }: { compact?: boolean }) 
           <div className="shell event-strip-grid">
             <div><span>📍</span><strong>Pasta sala</strong><small>Jelgava</small></div>
             <div><span>📅</span><strong>12.09.2026.</strong><small>10:30–13:00</small></div>
-            <div><span>🏃</span><strong>Distance: 1 km</strong><small>Skrējiens ar šķēršļiem</small></div>
+            <div><span>🏃</span><strong>Distance: 1 km</strong><small>Skrējiens ar uzdevumiem</small></div>
             <div><span>👨‍👧‍👦</span><strong>Tēvi + bērni</strong><small>Kopā kustībā</small></div>
           </div>
         </section>
