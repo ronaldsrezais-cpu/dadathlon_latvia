@@ -2,7 +2,7 @@
 
 - [ ] Izveidots Google Sheet “Dadathlon Latvija — Reģistrācija”.
 - [ ] `apps-script/Code.gs` ievietots Apps Script.
-- [x] `CONFIG.SITE_URL` iestatīts uz `https://dadathlon-latvia.vercel.app`.
+- [x] `CONFIG.SITE_URL` iestatīts uz `https://dadathlonlatvija.com`.
 - [ ] Vienu reizi palaista funkcija `setupDadathlon()` un apstiprinātas Google atļaujas.
 - [ ] Google Sheet redzamas lapas “Reģistrētās ģimenes” un “Bērni”.
 - [x] Apps Script Web App `/exec` adrese ir saņemta un pievienota projektam.

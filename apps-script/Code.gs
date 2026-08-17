@@ -14,10 +14,10 @@ const CONFIG = {
   REPORT_SHEET_NAME: 'Reģistrētās ģimenes',
   CHILD_SHEET_NAME: 'Bērni',
   SHIRT_LIMIT: 150,
-  SITE_URL: 'https://dadathlon-latvia.vercel.app',
+  SITE_URL: 'https://dadathlonlatvija.com',
   EVENT_NAME: 'Dadathlon Latvija',
   EVENT_DATE: '2026. gada 12. septembrī',
-  EVENT_TIME: '10:00–13:00',
+  EVENT_TIME: '10:30–13:00',
   EVENT_PLACE: 'Pasta salā, Jelgavā',
   DISTANCE_INFO: 'Distance: 1 km.',
   CONTACT_EMAIL: 'latvijassportafederacijupadome@gmail.com',
@@ -555,7 +555,7 @@ function sendConfirmationEmail_(data) {
     introText,
     '',
     `Datums: ${CONFIG.EVENT_DATE}`,
-    'Aktivitātes visiem: no 10:00 līdz 13:00',
+    'Aktivitātes visiem: no 10:30 līdz 13:00',
     `Vieta: ${CONFIG.EVENT_PLACE}`,
     'Skrējiens: 1 km ar šķēršļiem',
     `Bērnu skaits: ${data.children.length}`,
@@ -585,7 +585,7 @@ function sendConfirmationEmail_(data) {
 
       <p>
         <strong>Datums:</strong> ${escapeHtml_(CONFIG.EVENT_DATE)}<br>
-        <strong>Aktivitātes visiem:</strong> no 10:00 līdz 13:00<br>
+        <strong>Aktivitātes visiem:</strong> no 10:30 līdz 13:00<br>
         <strong>Vieta:</strong> ${escapeHtml_(CONFIG.EVENT_PLACE)}<br>
         <strong>Skrējiens:</strong> 1 km ar šķēršļiem<br>
         <strong>Bērnu skaits:</strong> ${data.children.length}

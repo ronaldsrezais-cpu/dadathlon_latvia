@@ -1,6 +1,6 @@
 # Dadathlon Latvija — reģistrācijas forma
 
-Next.js reģistrācijas vietne pasākumam **Dadathlon Latvija**, kas notiks **2026. gada 12. septembrī, 10:00–13:00, Pasta salā, Jelgavā**.
+Next.js reģistrācijas vietne pasākumam **Dadathlon Latvija**, kas notiks **2026. gada 12. septembrī, 10:30–13:00, Pasta salā, Jelgavā**.
 
 ## Iekļautā funkcionalitāte
 
@@ -64,7 +64,7 @@ Atveriet `http://localhost:3000`.
 4. `CONFIG.SITE_URL` jau ir iestatīts uz publisko Dadathlon Latvija vietni:
 
 ```javascript
-SITE_URL: 'https://dadathlon-latvia.vercel.app'
+SITE_URL: 'https://dadathlonlatvija.com'
 ```
 
 ### B. Sagatavojiet tabulas un atļaujas
@@ -132,7 +132,7 @@ Projektam pievienots arī fails `Dadathlon_Registracijas_dati.xlsx`, kas parāda
 2. Vercel izvēlieties **Add New → Project**.
 3. Pievienojiet vides mainīgo `NEXT_PUBLIC_APPS_SCRIPT_URL`.
 4. Izvietojiet projektu.
-5. `CONFIG.SITE_URL` Apps Script failā jau ir iestatīts uz `https://dadathlon-latvia.vercel.app`.
+5. `CONFIG.SITE_URL` Apps Script failā jau ir iestatīts uz `https://dadathlonlatvija.com`.
 6. Apps Script izvēlieties **Deploy → Manage deployments → Edit → New version → Deploy**, lai jaunā vietnes adrese tiktu izmantota apstiprinājuma e-pastu labošanas/atsaukšanas saitēs.
 
 ## Pirms publiskas reģistrācijas atvēršanas

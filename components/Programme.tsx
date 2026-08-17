@@ -12,7 +12,7 @@ const activities = [
   { name: "Nūjošana", icon: "🚶" },
   { name: "Ķer un servē", icon: "🎾" },
   { name: "Zumba", icon: "💃" },
-  { name: "Petanka", icon: "🎯" },
+  { name: "Petanks", icon: "🎯" },
   { name: "Šķēršļu josla", icon: "🚧" },
 ];
 
@@ -27,7 +27,7 @@ export default function Programme() {
 
           <div className="programme-block">
             <div className="programme-time">
-              <strong>10:00–13:00</strong>
+              <strong>10:30–13:00</strong>
               <span>Sporta/aktivitāšu stacijas</span>
             </div>
             <p className="programme-invitation">

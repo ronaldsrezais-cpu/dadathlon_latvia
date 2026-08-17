@@ -35,7 +35,7 @@ export default function Footer() {
         </section>
 
         <div className="footer-inner">
-          <p><strong>Dadathlon Latvija</strong><br />12. septembris · 10:00–13:00 · Pasta sala, Jelgava</p>
+          <p><strong>Dadathlon Latvija</strong><br />12. septembris · 10:30–13:00 · Pasta sala, Jelgava</p>
           <p className="footer-note">Jautājumiem par reģistrāciju: <a href="mailto:latvijassportafederacijupadome@gmail.com">latvijassportafederacijupadome@gmail.com</a></p>
         </div>
 
