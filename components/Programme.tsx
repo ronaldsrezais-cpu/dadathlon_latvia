@@ -18,12 +18,11 @@ const activities = [
 
 export default function Programme() {
   return (
-    <section className="programme-section" aria-labelledby="programme-title">
+    <section className="programme-section" aria-label="Pasākuma programma">
       <div className="shell form-shell">
         <div className="programme-card">
           <div className="programme-heading">
             <p className="section-kicker">Pasākuma programma</p>
-            <h2 id="programme-title">Dadathlon Latvija programma</h2>
           </div>
 
           <div className="programme-block">

@@ -371,7 +371,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
               <section className="form-card">
                 <div className="section-heading">
                   <span>3</span>
-                  <div><h2>Bērni</h2><p>Norādiet katra bērna vecumu un, ja pieejams, T-krekla izmēru.</p></div>
+                  <div><h2>Bērni</h2></div>
                 </div>
 
                 <div className="children-list">
