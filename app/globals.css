@@ -578,3 +578,38 @@ select:focus { border-color: var(--navy); box-shadow: 0 0 0 4px rgba(7, 52, 130,
   .success-modal-actions { flex-direction: column; }
   .success-modal-actions > * { width: 100%; }
 }
+
+
+/* Registration validation */
+.field-group--error input,
+.field-group--error select,
+input[aria-invalid="true"],
+select[aria-invalid="true"] {
+  border-color: var(--error);
+  background: #fffafb;
+  box-shadow: 0 0 0 3px rgba(170, 29, 47, .10);
+}
+.field-group--error .field-label { color: var(--error); }
+.field-error {
+  margin: 7px 0 0;
+  color: var(--error);
+  font-size: .82rem;
+  font-weight: 750;
+  line-height: 1.35;
+}
+.checkbox-row--error {
+  margin-left: -10px;
+  margin-right: -10px;
+  padding: 10px;
+  border: 1px solid #f0b4bf;
+  border-radius: 12px;
+  background: var(--error-bg);
+}
+.checkbox-row--error span { color: #6f1b2a; }
+.checkbox-error {
+  display: block;
+  margin-top: 5px;
+  color: var(--error);
+  font-size: .8rem;
+  font-weight: 800;
+}

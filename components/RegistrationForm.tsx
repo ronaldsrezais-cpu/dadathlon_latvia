@@ -58,6 +58,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
   const [consent, setConsent] = useState(false);
   const [photoConsent, setPhotoConsent] = useState(false);
   const [informationConfirmed, setInformationConfirmed] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
 
   const canChooseShirts = mode === "edit" ? Boolean(shirtEligible) : status.shirtsAvailable;
 
@@ -131,8 +132,27 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
     topRef.current?.focus({ preventScroll: true });
   }
 
+  function clearFieldError(fieldId: string) {
+    setFieldErrors((current) => {
+      if (!current[fieldId]) return current;
+      const next = { ...current };
+      delete next[fieldId];
+      return next;
+    });
+  }
+
+  function scrollToField(fieldId: string) {
+    window.requestAnimationFrame(() => {
+      const element = document.getElementById(fieldId);
+      if (!element) return;
+      element.scrollIntoView({ behavior: "smooth", block: "center" });
+      window.setTimeout(() => element.focus({ preventScroll: true }), 350);
+    });
+  }
+
   function updateChild(id: string, field: keyof ChildMember, value: string) {
     setChildren((current) => current.map((child) => (child.id === id ? { ...child, [field]: value } : child)));
+    clearFieldError(field === "age" ? `child-age-${id}` : `child-size-${id}`);
   }
 
   function addChild() {
@@ -153,6 +173,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
     setConsent(false);
     setPhotoConsent(false);
     setInformationConfirmed(false);
+    setFieldErrors({});
   }
 
   function closeSuccessModal() {
@@ -164,19 +185,34 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
     }
   }
 
-  function validate(): string | null {
-    if (!teamName.trim()) return "Norādiet ģimenes vai komandas nosaukumu.";
-    if (!fatherName.trim()) return "Norādiet tēva vārdu un uzvārdu.";
-    if (!email.trim()) return "Norādiet e-pasta adresi.";
-    if (!/^\S+@\S+\.\S+$/.test(email.trim())) return "Pārbaudiet e-pasta adresi.";
-    if (!phone.trim()) return "Norādiet tālruņa numuru.";
-    if (children.some((child) => !child.age.trim())) return "Norādiet katra bērna vecumu.";
-    if (canChooseShirts && !fatherShirtSize) return "Izvēlieties tēva T-krekla izmēru.";
-    if (canChooseShirts && children.some((child) => !child.shirtSize)) return "Izvēlieties T-krekla izmēru katram bērnam.";
-    if (!consent) return "Lai iesniegtu pieteikumu, nepieciešama piekrišana personas datu apstrādei.";
-    if (!photoConsent) return "Apstipriniet, ka esat informēts par fotografēšanu un filmēšanu pasākuma laikā.";
-    if (!informationConfirmed) return "Apstipriniet, ka norādītā informācija ir pareiza.";
-    return null;
+  function validate(): Array<{ fieldId: string; message: string }> {
+    const issues: Array<{ fieldId: string; message: string }> = [];
+
+    if (!teamName.trim()) issues.push({ fieldId: "teamName", message: "Norādiet ģimenes vai komandas nosaukumu." });
+    if (!fatherName.trim()) issues.push({ fieldId: "fatherName", message: "Norādiet tēva vārdu un uzvārdu." });
+    if (!email.trim()) issues.push({ fieldId: "email", message: "Norādiet e-pasta adresi." });
+    if (!phone.trim()) issues.push({ fieldId: "phone", message: "Norādiet tālruņa numuru." });
+
+    if (canChooseShirts && !fatherShirtSize) {
+      issues.push({ fieldId: "fatherShirtSize", message: "Izvēlieties tēva T-krekla izmēru." });
+    }
+
+    children.forEach((child, index) => {
+      const ageId = `child-age-${child.id}`;
+      const sizeId = `child-size-${child.id}`;
+      if (!child.age.trim()) {
+        issues.push({ fieldId: ageId, message: `Norādiet bērna Nr. ${index + 1} vecumu.` });
+      }
+      if (canChooseShirts && !child.shirtSize) {
+        issues.push({ fieldId: sizeId, message: `Izvēlieties T-krekla izmēru bērnam Nr. ${index + 1}.` });
+      }
+    });
+
+    if (!consent) issues.push({ fieldId: "consent", message: "Nepieciešama piekrišana personas datu apstrādei." });
+    if (!photoConsent) issues.push({ fieldId: "photoConsent", message: "Apstipriniet informāciju par fotografēšanu un filmēšanu." });
+    if (!informationConfirmed) issues.push({ fieldId: "informationConfirmed", message: "Apstipriniet, ka sniegtā informācija ir pareiza." });
+
+    return issues;
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -184,12 +220,14 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
     setMessage(null);
     setResult(null);
 
-    const validationError = validate();
-    if (validationError) {
-      setMessage({ type: "error", text: validationError });
-      scrollTop();
+    const validationIssues = validate();
+    if (validationIssues.length) {
+      setFieldErrors(Object.fromEntries(validationIssues.map((issue) => [issue.fieldId, issue.message])));
+      setMessage({ type: "error", text: "Lūdzu, aizpildiet vai pārbaudiet zemāk atzīmētos obligātos laukus." });
+      scrollToField(validationIssues[0].fieldId);
       return;
     }
+    setFieldErrors({});
 
     setLoading(true);
     try {
@@ -327,9 +365,10 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                   <div><h2>Komandas informācija</h2><p>Norādiet ģimenes / komandas nosaukumu.</p></div>
                 </div>
 
-                <div className="field-group">
+                <div className={`field-group ${fieldErrors.teamName ? "field-group--error" : ""}`}>
                   <label className="field-label" htmlFor="teamName">Ģimenes / komandas nosaukums <em>*</em></label>
-                  <input id="teamName" value={teamName} onChange={(e) => setTeamName(e.target.value)} placeholder="Piemēram, Ātrie Ozoli" autoComplete="organization" />
+                  <input id="teamName" value={teamName} onChange={(e) => { setTeamName(e.target.value); clearFieldError("teamName"); }} placeholder="Piemēram, Ātrie Ozoli" autoComplete="organization" aria-invalid={Boolean(fieldErrors.teamName)} aria-describedby={fieldErrors.teamName ? "teamName-error" : undefined} />
+                  {fieldErrors.teamName && <p className="field-error" id="teamName-error">{fieldErrors.teamName}</p>}
                 </div>
               </section>
 
@@ -340,28 +379,32 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                 </div>
 
                 <div className="two-column-grid">
-                  <div className="field-group field-group--wide">
+                  <div className={`field-group field-group--wide ${fieldErrors.fatherName ? "field-group--error" : ""}`}>
                     <label className="field-label" htmlFor="fatherName">Vārds, uzvārds <em>*</em></label>
-                    <input id="fatherName" value={fatherName} onChange={(e) => setFatherName(e.target.value)} autoComplete="name" />
+                    <input id="fatherName" value={fatherName} onChange={(e) => { setFatherName(e.target.value); clearFieldError("fatherName"); }} autoComplete="name" aria-invalid={Boolean(fieldErrors.fatherName)} aria-describedby={fieldErrors.fatherName ? "fatherName-error" : undefined} />
+                    {fieldErrors.fatherName && <p className="field-error" id="fatherName-error">{fieldErrors.fatherName}</p>}
                   </div>
-                  <div className="field-group">
+                  <div className={`field-group ${fieldErrors.email ? "field-group--error" : ""}`}>
                     <label className="field-label" htmlFor="email">E-pasts <em>*</em></label>
-                    <input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
+                    <input id="email" type="text" inputMode="email" value={email} onChange={(e) => { setEmail(e.target.value); clearFieldError("email"); }} autoComplete="email" aria-invalid={Boolean(fieldErrors.email)} aria-describedby={fieldErrors.email ? "email-error" : undefined} />
+                    {fieldErrors.email && <p className="field-error" id="email-error">{fieldErrors.email}</p>}
                   </div>
-                  <div className="field-group">
+                  <div className={`field-group ${fieldErrors.phone ? "field-group--error" : ""}`}>
                     <label className="field-label" htmlFor="phone">Tālrunis <em>*</em></label>
-                    <input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" placeholder="+371 ..." />
+                    <input id="phone" type="tel" value={phone} onChange={(e) => { setPhone(e.target.value); clearFieldError("phone"); }} autoComplete="tel" placeholder="+371 ..." aria-invalid={Boolean(fieldErrors.phone)} aria-describedby={fieldErrors.phone ? "phone-error" : undefined} />
+                    {fieldErrors.phone && <p className="field-error" id="phone-error">{fieldErrors.phone}</p>}
                   </div>
                 </div>
 
                 {canChooseShirts && (
                   <div className="shirt-selection-layout">
-                    <div className="field-group shirt-field">
+                    <div className={`field-group shirt-field ${fieldErrors.fatherShirtSize ? "field-group--error" : ""}`}>
                       <label className="field-label" htmlFor="fatherShirtSize">Tēva T-krekla izmērs <em>*</em></label>
-                      <select id="fatherShirtSize" value={fatherShirtSize} onChange={(e) => setFatherShirtSize(e.target.value as RegistrationPayload["fatherShirtSize"])}>
+                      <select id="fatherShirtSize" value={fatherShirtSize} onChange={(e) => { setFatherShirtSize(e.target.value as RegistrationPayload["fatherShirtSize"]); clearFieldError("fatherShirtSize"); }} aria-invalid={Boolean(fieldErrors.fatherShirtSize)} aria-describedby={fieldErrors.fatherShirtSize ? "fatherShirtSize-error" : undefined}>
                         <option value="">Izvēlieties izmēru</option>
                         {ADULT_SIZES.map((size) => <option key={size} value={size}>{size}</option>)}
                       </select>
+                      {fieldErrors.fatherShirtSize && <p className="field-error" id="fatherShirtSize-error">{fieldErrors.fatherShirtSize}</p>}
                     </div>
                     <AdultSizeTable />
                   </div>
@@ -384,13 +427,14 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                       {canChooseShirts ? (
                         <div className="child-size-layout">
                           <div className="child-size-fields">
-                            <div className="field-group">
+                            <div className={`field-group ${fieldErrors[`child-age-${child.id}`] ? "field-group--error" : ""}`}>
                               <label className="field-label" htmlFor={`child-age-${child.id}`}>Bērna vecums <em>*</em></label>
-                              <input id={`child-age-${child.id}`} type="number" min="1" max="17" inputMode="numeric" value={child.age} onChange={(e) => updateChild(child.id, "age", e.target.value)} />
+                              <input id={`child-age-${child.id}`} type="number" inputMode="numeric" value={child.age} onChange={(e) => updateChild(child.id, "age", e.target.value)} aria-invalid={Boolean(fieldErrors[`child-age-${child.id}`])} aria-describedby={fieldErrors[`child-age-${child.id}`] ? `child-age-${child.id}-error` : undefined} />
+                              {fieldErrors[`child-age-${child.id}`] && <p className="field-error" id={`child-age-${child.id}-error`}>{fieldErrors[`child-age-${child.id}`]}</p>}
                             </div>
-                            <div className="field-group">
+                            <div className={`field-group ${fieldErrors[`child-size-${child.id}`] ? "field-group--error" : ""}`}>
                               <label className="field-label" htmlFor={`child-size-${child.id}`}>T-krekla izmērs <em>*</em></label>
-                              <select id={`child-size-${child.id}`} value={child.shirtSize} onChange={(e) => updateChild(child.id, "shirtSize", e.target.value)}>
+                              <select id={`child-size-${child.id}`} value={child.shirtSize} onChange={(e) => updateChild(child.id, "shirtSize", e.target.value)} aria-invalid={Boolean(fieldErrors[`child-size-${child.id}`])} aria-describedby={fieldErrors[`child-size-${child.id}`] ? `child-size-${child.id}-error` : undefined}>
                                 <option value="">Izvēlieties izmēru</option>
                                 <optgroup label="Bērnu izmēri">
                                   {CHILD_SIZES.map((size) => <option key={`child-${size}`} value={size}>{size}</option>)}
@@ -399,6 +443,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                                   {ADULT_SIZES.map((size) => <option key={`adult-${size}`} value={size}>{size}</option>)}
                                 </optgroup>
                               </select>
+                              {fieldErrors[`child-size-${child.id}`] && <p className="field-error" id={`child-size-${child.id}-error`}>{fieldErrors[`child-size-${child.id}`]}</p>}
                               <p className="field-help">Bērnam iespējams izvēlēties arī pieaugušo T-krekla izmēru.</p>
                             </div>
                           </div>
@@ -408,9 +453,10 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                           </div>
                         </div>
                       ) : (
-                        <div className="field-group child-age-only">
+                        <div className={`field-group child-age-only ${fieldErrors[`child-age-${child.id}`] ? "field-group--error" : ""}`}>
                           <label className="field-label" htmlFor={`child-age-${child.id}`}>Bērna vecums <em>*</em></label>
-                          <input id={`child-age-${child.id}`} type="number" min="1" max="17" inputMode="numeric" value={child.age} onChange={(e) => updateChild(child.id, "age", e.target.value)} />
+                          <input id={`child-age-${child.id}`} type="number" inputMode="numeric" value={child.age} onChange={(e) => updateChild(child.id, "age", e.target.value)} aria-invalid={Boolean(fieldErrors[`child-age-${child.id}`])} aria-describedby={fieldErrors[`child-age-${child.id}`] ? `child-age-${child.id}-error` : undefined} />
+                          {fieldErrors[`child-age-${child.id}`] && <p className="field-error" id={`child-age-${child.id}-error`}>{fieldErrors[`child-age-${child.id}`]}</p>}
                         </div>
                       )}
                     </article>
@@ -426,19 +472,19 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                   <div><h2>Apstiprinājums</h2><p>Pārbaudiet informāciju pirms pieteikuma iesniegšanas.</p></div>
                 </div>
 
-                <label className="checkbox-row">
-                  <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} />
-                  <span>Piekrītu, ka norādītie personas dati tiek apstrādāti Dadathlon pasākuma organizēšanai un saziņai par dalību. <em>*</em></span>
+                <label className={`checkbox-row ${fieldErrors.consent ? "checkbox-row--error" : ""}`}>
+                  <input id="consent" type="checkbox" checked={consent} onChange={(e) => { setConsent(e.target.checked); clearFieldError("consent"); }} aria-invalid={Boolean(fieldErrors.consent)} aria-describedby={fieldErrors.consent ? "consent-error" : undefined} />
+                  <span>Piekrītu, ka norādītie personas dati tiek apstrādāti Dadathlon pasākuma organizēšanai un saziņai par dalību. <em>*</em>{fieldErrors.consent && <small className="checkbox-error" id="consent-error">{fieldErrors.consent}</small>}</span>
                 </label>
 
-                <label className="checkbox-row">
-                  <input type="checkbox" checked={photoConsent} onChange={(e) => setPhotoConsent(e.target.checked)} />
-                  <span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv" target="_blank" rel="noreferrer">www.lsfp.lv</a> sabiedrības informēšanas nolūkos. <em>*</em></span>
+                <label className={`checkbox-row ${fieldErrors.photoConsent ? "checkbox-row--error" : ""}`}>
+                  <input id="photoConsent" type="checkbox" checked={photoConsent} onChange={(e) => { setPhotoConsent(e.target.checked); clearFieldError("photoConsent"); }} aria-invalid={Boolean(fieldErrors.photoConsent)} aria-describedby={fieldErrors.photoConsent ? "photoConsent-error" : undefined} />
+                  <span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv" target="_blank" rel="noreferrer">www.lsfp.lv</a> sabiedrības informēšanas nolūkos. <em>*</em>{fieldErrors.photoConsent && <small className="checkbox-error" id="photoConsent-error">{fieldErrors.photoConsent}</small>}</span>
                 </label>
 
-                <label className="checkbox-row">
-                  <input type="checkbox" checked={informationConfirmed} onChange={(e) => setInformationConfirmed(e.target.checked)} />
-                  <span>Apstiprinu, ka sniegtā informācija ir pareiza un bērna dalībai ir likumiskā pārstāvja piekrišana. <em>*</em></span>
+                <label className={`checkbox-row ${fieldErrors.informationConfirmed ? "checkbox-row--error" : ""}`}>
+                  <input id="informationConfirmed" type="checkbox" checked={informationConfirmed} onChange={(e) => { setInformationConfirmed(e.target.checked); clearFieldError("informationConfirmed"); }} aria-invalid={Boolean(fieldErrors.informationConfirmed)} aria-describedby={fieldErrors.informationConfirmed ? "informationConfirmed-error" : undefined} />
+                  <span>Apstiprinu, ka sniegtā informācija ir pareiza un bērna dalībai ir likumiskā pārstāvja piekrišana. <em>*</em>{fieldErrors.informationConfirmed && <small className="checkbox-error" id="informationConfirmed-error">{fieldErrors.informationConfirmed}</small>}</span>
                 </label>
 
                 <p className="required-note"><em>*</em> Obligāti aizpildāms lauks.</p>

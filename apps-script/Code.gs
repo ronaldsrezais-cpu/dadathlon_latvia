@@ -519,7 +519,7 @@ function createUniqueCode_(sheet) {
 function validatePayload_(payload) {
   if (!clean_(payload.teamName)) throw new Error('Nav norādīts komandas nosaukums.');
   if (!clean_(payload.fatherName)) throw new Error('Nav norādīts tēva vārds un uzvārds.');
-  if (!isValidEmail_(clean_(payload.email))) throw new Error('Nav norādīta derīga e-pasta adrese.');
+  if (!clean_(payload.email)) throw new Error('Nav norādīta e-pasta adrese.');
   if (!clean_(payload.phone)) throw new Error('Nav norādīts tālruņa numurs.');
   if (!Array.isArray(payload.children) || payload.children.length < 1) throw new Error('Jāpievieno vismaz viens bērns.');
   if (payload.children.some((child) => !clean_(child.age))) throw new Error('Norādiet katra bērna vecumu.');
@@ -555,9 +555,9 @@ function sendConfirmationEmail_(data) {
     introText,
     '',
     `Datums: ${CONFIG.EVENT_DATE}`,
-    `Aktivitātes visiem: no 10:00 līdz 13:00`,
+    'Aktivitātes visiem: no 10:00 līdz 13:00',
     `Vieta: ${CONFIG.EVENT_PLACE}`,
-    `Skrējiens: 1 km ar šķēršļiem`,
+    'Skrējiens: 1 km ar šķēršļiem',
     `Bērnu skaits: ${data.children.length}`,
     '',
     'Skrējiena programma:',
@@ -576,60 +576,40 @@ function sendConfirmationEmail_(data) {
     'Latvijas Sporta federāciju padome.',
   ].join('\n');
 
+  // Minimāls HTML tiek izmantots tikai tam, lai e-pasta apakšā varētu parādīt mazu LSFP logo.
+  // Pārējais e-pasts ir veidots kā vienkāršs teksta ziņojums bez kartēm, tabulām, pogām vai dekoratīva dizaina.
   const htmlBody = `
-    <div style="font-family:Arial,sans-serif;line-height:1.6;color:#172033;max-width:650px;margin:auto">
-      <div style="background:#073482;color:#fff;padding:22px 26px;border-radius:14px 14px 0 0">
-        <h1 style="margin:0;font-size:24px">${escapeHtml_(CONFIG.EVENT_NAME)}</h1>
-      </div>
-      <div style="border:1px solid #dce3ed;border-top:0;padding:26px;border-radius:0 0 14px 14px">
-        <p>Labdien, <strong>${escapeHtml_(data.teamName)}</strong>!</p>
-        <p>${escapeHtml_(introText)}</p>
+    <div style="font-family:Arial,sans-serif;font-size:15px;line-height:1.55;color:#000000">
+      <p>Labdien, ${escapeHtml_(data.teamName)}!</p>
+      <p>${escapeHtml_(introText)}</p>
 
-        <table style="border-collapse:collapse;width:100%;margin:18px 0">
-          <tr>
-            <td style="padding:7px 12px 7px 0;vertical-align:top"><strong>Datums:</strong></td>
-            <td style="padding:7px 0">${escapeHtml_(CONFIG.EVENT_DATE)}</td>
-          </tr>
-          <tr>
-            <td style="padding:7px 12px 7px 0;vertical-align:top"><strong>Aktivitātes visiem:</strong></td>
-            <td style="padding:7px 0">no 10:00 līdz 13:00</td>
-          </tr>
-          <tr>
-            <td style="padding:7px 12px 7px 0;vertical-align:top"><strong>Vieta:</strong></td>
-            <td style="padding:7px 0">${escapeHtml_(CONFIG.EVENT_PLACE)}</td>
-          </tr>
-          <tr>
-            <td style="padding:7px 12px 7px 0;vertical-align:top"><strong>Skrējiens:</strong></td>
-            <td style="padding:7px 0">1 km ar šķēršļiem</td>
-          </tr>
-          <tr>
-            <td style="padding:7px 12px 7px 0;vertical-align:top"><strong>Bērnu skaits:</strong></td>
-            <td style="padding:7px 0">${data.children.length}</td>
-          </tr>
-        </table>
+      <p>
+        <strong>Datums:</strong> ${escapeHtml_(CONFIG.EVENT_DATE)}<br>
+        <strong>Aktivitātes visiem:</strong> no 10:00 līdz 13:00<br>
+        <strong>Vieta:</strong> ${escapeHtml_(CONFIG.EVENT_PLACE)}<br>
+        <strong>Skrējiens:</strong> 1 km ar šķēršļiem<br>
+        <strong>Bērnu skaits:</strong> ${data.children.length}
+      </p>
 
-        <div style="background:#f4f7fb;padding:16px 18px;border-radius:10px;margin:20px 0">
-          <strong style="color:#073482">Skrējiena programma:</strong><br>
-          <strong>11:45 – iesildīšanās · 12:00 – skrējiens</strong><br>
-          Katrs dalībnieks, kas piedalīsies skrējienā, saņems medaļu.
-        </div>
+      <p><strong>Skrējiena programma:</strong><br>
+        11:45 – iesildīšanās · 12:00 – skrējiens<br>
+        Katrs dalībnieks, kas piedalīsies skrējienā, saņems medaļu.
+      </p>
 
-        <p>Ierodoties pasākumā, nepieciešams doties uz <strong>reģistrācijas telti</strong>, lai pieteiktu savas komandas ierašanos.</p>
+      <p>Ierodoties pasākumā, nepieciešams doties uz reģistrācijas telti, lai pieteiktu savas komandas ierašanos.</p>
 
-        <p style="margin-top:24px"><strong>Pieteikuma kods: ${escapeHtml_(data.code)}</strong></p>
-        <p style="color:#637083;font-size:13px">Saglabājiet pieteikuma kodu. Ar to varēsiet labot vai atsaukt pieteikumu.</p>
-        <p>
-          <a href="${escapeHtml_(data.editUrl)}" style="display:inline-block;background:#e8073c;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:9px;font-weight:bold">Labot vai atsaukt pieteikumu</a>
-        </p>
+      <p><strong>Pieteikuma kods:</strong> ${escapeHtml_(data.code)}<br>
+        Saglabājiet pieteikuma kodu. Ar to varēsiet labot vai atsaukt pieteikumu.<br>
+        Labot vai atsaukt pieteikumu: <a href="${escapeHtml_(data.editUrl)}">${escapeHtml_(data.editUrl)}</a>
+      </p>
 
-        <p style="color:#637083;font-size:13px;margin-top:28px">Jautājumiem par reģistrāciju: ${escapeHtml_(CONFIG.CONTACT_EMAIL)}</p>
+      <p>Jautājumiem par reģistrāciju: ${escapeHtml_(CONFIG.CONTACT_EMAIL)}</p>
 
-        <p style="margin-top:26px;margin-bottom:6px">Tavs sportisko pasākumu draugs,<br><strong>Latvijas Sporta federāciju padome.</strong></p>
+      <p>Tavs sportisko pasākumu draugs,<br>
+        Latvijas Sporta federāciju padome.
+      </p>
 
-        <div style="margin-top:18px;border-top:1px solid #e6eaf0;padding-top:18px">
-          <img src="cid:lsfpLogo" alt="Latvijas Sporta federāciju padome" style="display:block;width:100%;max-width:330px;height:auto;border:0">
-        </div>
-      </div>
+      <p><img src="cid:lsfpLogo" alt="Latvijas Sporta federāciju padome" style="display:block;width:150px;max-width:150px;height:auto;border:0"></p>
     </div>`;
 
   MailApp.sendEmail({
@@ -704,9 +684,6 @@ function clean_(value) {
   return String(value == null ? '' : value).trim();
 }
 
-function isValidEmail_(value) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-}
 
 function toBoolean_(value) {
   return value === true || String(value).toLowerCase() === 'true';

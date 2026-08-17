@@ -70,18 +70,18 @@
 
   <section class="form-card">
     <div class="section-heading"><span>1</span><div><h2>Komandas informācija</h2><p>Norādiet ģimenes / komandas nosaukumu.</p></div></div>
-    <div class="field-group"><label class="field-label">Ģimenes / komandas nosaukums <em>*</em></label><input placeholder="Piemēram, Ātrie Ozoli"></div>
+    <div class="field-group"><label class="field-label" for="preview-teamName">Ģimenes / komandas nosaukums <em>*</em></label><input id="preview-teamName" placeholder="Piemēram, Ātrie Ozoli"></div>
   </section>
 
   <section class="form-card">
     <div class="section-heading"><span>2</span><div><h2>Tēva informācija</h2><p>Uz šo e-pastu nosūtīsim apstiprinājumu un pieteikuma labošanas kodu.</p></div></div>
     <div class="two-column-grid">
-      <div class="field-group field-group--wide"><label class="field-label">Vārds, uzvārds <em>*</em></label><input></div>
-      <div class="field-group"><label class="field-label">E-pasts <em>*</em></label><input></div>
-      <div class="field-group"><label class="field-label">Tālrunis <em>*</em></label><input placeholder="+371 ..."></div>
+      <div class="field-group field-group--wide"><label class="field-label" for="preview-fatherName">Vārds, uzvārds <em>*</em></label><input id="preview-fatherName"></div>
+      <div class="field-group"><label class="field-label" for="preview-email">E-pasts <em>*</em></label><input id="preview-email" type="text" inputmode="email"></div>
+      <div class="field-group"><label class="field-label" for="preview-phone">Tālrunis <em>*</em></label><input id="preview-phone" placeholder="+371 ..."></div>
     </div>
     <div class="shirt-selection-layout">
-      <div class="field-group shirt-field"><label class="field-label">Tēva T-krekla izmērs <em>*</em></label><select><option>Izvēlieties izmēru</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>3XL</option><option>4XL</option><option>5XL</option></select></div>
+      <div class="field-group shirt-field"><label class="field-label" for="preview-fatherShirtSize">Tēva T-krekla izmērs <em>*</em></label><select id="preview-fatherShirtSize"><option>Izvēlieties izmēru</option><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>3XL</option><option>4XL</option><option>5XL</option></select></div>
       <div class="size-reference size-reference--adult"><p class="size-reference-title">Pieaugušo T-kreklu izmēri</p><div class="table-scroll"><table class="size-table size-table--adult"><thead><tr><th>Izmērs</th><th>XS</th><th>S</th><th>M</th><th>L</th><th>XL</th><th>XXL</th><th>3XL</th><th>4XL</th><th>5XL</th></tr></thead><tbody><tr><th>Platums, cm</th><td>47</td><td>50</td><td>53</td><td>56</td><td>59</td><td>62</td><td>65</td><td>68</td><td>71</td></tr><tr><th>Garums, cm</th><td>67</td><td>69</td><td>72</td><td>74</td><td>76</td><td>79</td><td>82</td><td>85</td><td>88</td></tr></tbody></table></div></div>
     </div>
   </section>
@@ -92,8 +92,8 @@
       <div class="child-card-header"><h3>Bērns Nr. 1</h3></div>
       <div class="child-size-layout">
         <div class="child-size-fields">
-          <div class="field-group"><label class="field-label">Bērna vecums <em>*</em></label><input type="number"></div>
-          <div class="field-group"><label class="field-label">T-krekla izmērs <em>*</em></label><select><option>Izvēlieties izmēru</option><optgroup label="Bērnu izmēri"><option>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option></optgroup><optgroup label="Pieaugušo izmēri"><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>3XL</option><option>4XL</option><option>5XL</option></optgroup></select><p class="field-help">Bērnam iespējams izvēlēties arī pieaugušo T-krekla izmēru.</p></div>
+          <div class="field-group"><label class="field-label" for="preview-childAge">Bērna vecums <em>*</em></label><input id="preview-childAge" type="number"></div>
+          <div class="field-group"><label class="field-label" for="preview-childSize">T-krekla izmērs <em>*</em></label><select id="preview-childSize"><option>Izvēlieties izmēru</option><optgroup label="Bērnu izmēri"><option>2</option><option>4</option><option>6</option><option>8</option><option>10</option><option>12</option></optgroup><optgroup label="Pieaugušo izmēri"><option>XS</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option><option>3XL</option><option>4XL</option><option>5XL</option></optgroup></select><p class="field-help">Bērnam iespējams izvēlēties arī pieaugušo T-krekla izmēru.</p></div>
         </div>
         <div class="child-size-guides">
           <div class="size-reference size-reference--child"><p class="size-reference-title">Bērnu T-kreklu izmēri</p><div class="table-scroll"><table class="size-table size-table--child"><thead><tr><th>Izmērs</th><th>Platums, cm</th><th>Garums, cm</th></tr></thead><tbody>
@@ -113,9 +113,9 @@
 
   <section class="form-card">
     <div class="section-heading"><span>4</span><div><h2>Apstiprinājums</h2><p>Pārbaudiet informāciju pirms pieteikuma iesniegšanas.</p></div></div>
-    <label class="checkbox-row"><input type="checkbox"><span>Piekrītu, ka norādītie personas dati tiek apstrādāti Dadathlon pasākuma organizēšanai un saziņai par dalību. <em>*</em></span></label>
-    <label class="checkbox-row"><input type="checkbox"><span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv">www.lsfp.lv</a> sabiedrības informēšanas nolūkos. <em>*</em></span></label>
-    <label class="checkbox-row"><input type="checkbox"><span>Apstiprinu, ka sniegtā informācija ir pareiza un bērna dalībai ir likumiskā pārstāvja piekrišana. <em>*</em></span></label>
+    <label class="checkbox-row"><input id="preview-consent" type="checkbox"><span>Piekrītu, ka norādītie personas dati tiek apstrādāti Dadathlon pasākuma organizēšanai un saziņai par dalību. <em>*</em></span></label>
+    <label class="checkbox-row"><input id="preview-photoConsent" type="checkbox"><span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv">www.lsfp.lv</a> sabiedrības informēšanas nolūkos. <em>*</em></span></label>
+    <label class="checkbox-row"><input id="preview-informationConfirmed" type="checkbox"><span>Apstiprinu, ka sniegtā informācija ir pareiza un bērna dalībai ir likumiskā pārstāvja piekrišana. <em>*</em></span></label>
     <p class="required-note"><em>*</em> Obligāti aizpildāms lauks.</p>
     <div class="submit-row"><button id="preview-submit" type="button" class="primary-button primary-button--large">Apstiprināt dalību</button></div>
   </section>
@@ -157,7 +157,52 @@
   const modal = document.getElementById('preview-success-modal');
   const openModal = () => { modal.style.display = 'grid'; document.body.style.overflow = 'hidden'; };
   const closeModal = () => { modal.style.display = 'none'; document.body.style.overflow = ''; };
-  document.getElementById('preview-submit').addEventListener('click', openModal);
+  const previewFields = [
+    ['preview-teamName', 'Norādiet ģimenes vai komandas nosaukumu.'],
+    ['preview-fatherName', 'Norādiet tēva vārdu un uzvārdu.'],
+    ['preview-email', 'Norādiet e-pasta adresi.'],
+    ['preview-phone', 'Norādiet tālruņa numuru.'],
+    ['preview-fatherShirtSize', 'Izvēlieties tēva T-krekla izmēru.'],
+    ['preview-childAge', 'Norādiet bērna vecumu.'],
+    ['preview-childSize', 'Izvēlieties bērna T-krekla izmēru.'],
+    ['preview-consent', 'Nepieciešama piekrišana personas datu apstrādei.'],
+    ['preview-photoConsent', 'Apstipriniet informāciju par fotografēšanu un filmēšanu.'],
+    ['preview-informationConfirmed', 'Apstipriniet, ka sniegtā informācija ir pareiza.']
+  ];
+  function clearPreviewError(el) {
+    el.removeAttribute('aria-invalid');
+    const row = el.closest('.field-group, .checkbox-row');
+    if (!row) return;
+    row.classList.remove('field-group--error', 'checkbox-row--error');
+    row.querySelector('.field-error, .checkbox-error')?.remove();
+  }
+  previewFields.forEach(([id]) => {
+    const el = document.getElementById(id);
+    el?.addEventListener(el.type === 'checkbox' || el.tagName === 'SELECT' ? 'change' : 'input', () => clearPreviewError(el));
+  });
+  document.getElementById('preview-submit').addEventListener('click', () => {
+    let firstInvalid = null;
+    previewFields.forEach(([id, text]) => {
+      const el = document.getElementById(id);
+      clearPreviewError(el);
+      const invalid = el.type === 'checkbox' ? !el.checked : !String(el.value || '').trim() || (el.type === 'email' && !/^\S+@\S+\.\S+$/.test(el.value.trim()));
+      if (!invalid) return;
+      if (!firstInvalid) firstInvalid = el;
+      el.setAttribute('aria-invalid', 'true');
+      const row = el.closest('.field-group, .checkbox-row');
+      row.classList.add(row.classList.contains('checkbox-row') ? 'checkbox-row--error' : 'field-group--error');
+      const err = document.createElement(row.classList.contains('checkbox-row') ? 'small' : 'p');
+      err.className = row.classList.contains('checkbox-row') ? 'checkbox-error' : 'field-error';
+      err.textContent = text;
+      if (row.classList.contains('checkbox-row')) row.querySelector('span').appendChild(err); else row.appendChild(err);
+    });
+    if (firstInvalid) {
+      firstInvalid.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setTimeout(() => firstInvalid.focus({ preventScroll: true }), 350);
+      return;
+    }
+    openModal();
+  });
   document.getElementById('preview-modal-close').addEventListener('click', closeModal);
   document.getElementById('preview-modal-close-x').addEventListener('click', closeModal);
   modal.addEventListener('click', (event) => { if (event.target === modal) closeModal(); });
