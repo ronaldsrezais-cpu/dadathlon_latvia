@@ -288,18 +288,18 @@ function cancelRegistration_(payload) {
 function getStatus_() {
   const sheet = getSheet_();
   const rows = getDataRows_(sheet);
-  const totalRegistrations = rows.filter((row) => String(row[COL.STATUS - 1]).toLowerCase() === 'active').length;
-  const maxAssignedSlot = rows.reduce((max, row) => {
-    const value = Number(row[COL.SHIRT_SLOT - 1]) || 0;
-    return Math.max(max, value);
-  }, 0);
-  const shirtSlotsTaken = Math.min(maxAssignedSlot, CONFIG.SHIRT_LIMIT);
+  const activeRows = rows.filter((row) => String(row[COL.STATUS - 1]).toLowerCase() === 'active');
+  const totalRegistrations = activeRows.length;
+
+  // T-kreklu skaitītājs rāda faktisko AKTĪVO ģimeņu skaitu, kurām T-krekli ir piešķirti.
+  // Atsaukts vai izdzēsts pieteikums vairs netiek ieskaitīts 150 vietu limitā.
+  const shirtSlotsTaken = activeRows.filter((row) => toBoolean_(row[COL.SHIRT_ELIGIBLE - 1])).length;
 
   return {
     ok: true,
     totalRegistrations,
-    shirtSlotsTaken,
-    shirtsAvailable: maxAssignedSlot < CONFIG.SHIRT_LIMIT,
+    shirtSlotsTaken: Math.min(shirtSlotsTaken, CONFIG.SHIRT_LIMIT),
+    shirtsAvailable: shirtSlotsTaken < CONFIG.SHIRT_LIMIT,
     shirtLimit: CONFIG.SHIRT_LIMIT,
   };
 }
@@ -503,8 +503,27 @@ function findRegistrationRow_(sheet, code) {
 
 function getNextShirtSlot_(sheet) {
   const rows = getDataRows_(sheet);
-  const maxAssignedSlot = rows.reduce((max, row) => Math.max(max, Number(row[COL.SHIRT_SLOT - 1]) || 0), 0);
-  return maxAssignedSlot + 1;
+  const activeShirtRows = rows.filter((row) =>
+    String(row[COL.STATUS - 1]).toLowerCase() === 'active' &&
+    toBoolean_(row[COL.SHIRT_ELIGIBLE - 1])
+  );
+
+  // Ja jau ir 150 aktīvas ģimenes ar T-krekliem, atgriežam vērtību virs limita.
+  if (activeShirtRows.length >= CONFIG.SHIRT_LIMIT) return CONFIG.SHIRT_LIMIT + 1;
+
+  // Atsaukta vai izdzēsta pieteikuma vietu drīkst izmantot nākamā aktīvā ģimene.
+  // Izvēlamies pirmo brīvo vietas numuru no 1 līdz 150.
+  const usedSlots = new Set(
+    activeShirtRows
+      .map((row) => Number(row[COL.SHIRT_SLOT - 1]) || 0)
+      .filter((slot) => slot >= 1 && slot <= CONFIG.SHIRT_LIMIT)
+  );
+
+  for (let slot = 1; slot <= CONFIG.SHIRT_LIMIT; slot++) {
+    if (!usedSlots.has(slot)) return slot;
+  }
+
+  return CONFIG.SHIRT_LIMIT + 1;
 }
 
 function createUniqueCode_(sheet) {

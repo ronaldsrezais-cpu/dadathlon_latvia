@@ -157,3 +157,7 @@ Ieteicams veikt vienu pilnu testa reģistrāciju ar savu e-pasta adresi un pārb
 - `apps-script/Code.gs` — Google Sheet, e-pastu un reģistrācijas backend;
 - `Dadathlon_Registracijas_dati.xlsx` — Excel struktūras paraugs;
 - `public/` — logotipi.
+
+## T-kreklu skaitītāja loģika
+
+T-kreklu skaitītājs rāda faktisko aktīvo ģimeņu skaitu, kurām ir piešķirti T-krekli (maksimums 150). Atsaukts vai izdzēsts pieteikums vairs netiek ieskaitīts limitā, un atbrīvoto T-krekla vietas numuru var saņemt nākamā reģistrētā ģimene.

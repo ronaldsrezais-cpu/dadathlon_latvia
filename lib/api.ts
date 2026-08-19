@@ -26,10 +26,11 @@ function writeDemoRegistrations(items: Array<Record<string, unknown>>) {
 export async function getRegistrationStatus(): Promise<RegistrationStatus> {
   if (isDemoMode()) {
     const items = readDemoRegistrations();
-    const shirtSlotsTaken = items.filter((item) => item.shirtEligible).length;
+    const activeItems = items.filter((item) => item.status !== "cancelled");
+    const shirtSlotsTaken = activeItems.filter((item) => item.shirtEligible).length;
     return {
       ok: true,
-      totalRegistrations: items.filter((item) => item.status !== "cancelled").length,
+      totalRegistrations: activeItems.length,
       shirtSlotsTaken,
       shirtsAvailable: shirtSlotsTaken < 150,
       shirtLimit: 150,
@@ -64,14 +65,30 @@ export async function submitRegistration(payload: RegistrationPayload): Promise<
     const registrations = readDemoRegistrations();
 
     if (payload.action === "register") {
-      const shirtSlotsTaken = registrations.filter((item) => item.shirtEligible).length;
-      const shirtEligible = shirtSlotsTaken < 150;
+      const activeShirtRegistrations = registrations.filter(
+        (item) => item.status !== "cancelled" && item.shirtEligible,
+      );
+      const shirtEligible = activeShirtRegistrations.length < 150;
+      const usedSlots = new Set(
+        activeShirtRegistrations
+          .map((item) => Number(item.shirtSlot) || 0)
+          .filter((slot) => slot >= 1 && slot <= 150),
+      );
+      let nextShirtSlot: number | null = null;
+      if (shirtEligible) {
+        for (let slot = 1; slot <= 150; slot += 1) {
+          if (!usedSlots.has(slot)) {
+            nextShirtSlot = slot;
+            break;
+          }
+        }
+      }
       const code = `DAD-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
       const item = {
         ...payload,
         code,
         shirtEligible,
-        shirtSlot: shirtEligible ? shirtSlotsTaken + 1 : null,
+        shirtSlot: shirtEligible ? nextShirtSlot : null,
         status: "active",
       };
       registrations.push(item);
