@@ -349,7 +349,16 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
                       </p>
                     </div>
                   </div>
-                  <span className="status-count">{Math.min(status.shirtSlotsTaken, 150)} / 150</span>
+                  <div className="registration-counters" aria-label="Reģistrācijas skaitītāji">
+                    <div className="registration-counter registration-counter--total">
+                      <span>Kopā reģistrētas komandas</span>
+                      <strong>{statusLoaded ? status.totalRegistrations : "–"}</strong>
+                    </div>
+                    <div className="registration-counter registration-counter--shirts">
+                      <span>T-kreklu vietas</span>
+                      <strong>{statusLoaded ? Math.min(status.shirtSlotsTaken, 150) : "–"} / 150</strong>
+                    </div>
+                  </div>
                 </section>
               )}
 
@@ -479,7 +488,7 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
 
                 <label className={`checkbox-row ${fieldErrors.photoConsent ? "checkbox-row--error" : ""}`}>
                   <input id="photoConsent" type="checkbox" checked={photoConsent} onChange={(e) => { setPhotoConsent(e.target.checked); clearFieldError("photoConsent"); }} aria-invalid={Boolean(fieldErrors.photoConsent)} aria-describedby={fieldErrors.photoConsent ? "photoConsent-error" : undefined} />
-                  <span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv" target="_blank" rel="noreferrer">www.lsfp.lv</a> sabiedrības informēšanas nolūkos. <em>*</em>{fieldErrors.photoConsent && <small className="checkbox-error" id="photoConsent-error">{fieldErrors.photoConsent}</small>}</span>
+                  <span>Apstiprinu, ka Dadathlon Latvija ir publisks pasākums, kura laikā iespējama pasākuma dalībnieku fotografēšana un filmēšana, un iegūtie materiāli var tikt publicēti Latvijas Sporta federāciju padomes informatīvajos kanālos, sociālajos tīklos un mājaslapā <a href="https://www.lsfp.lv" target="_blank" rel="noreferrer">www.lsfp.lv</a>, kā arī Jelgavas Sporta servisa centra informatīvajos kanālos – tīmekļvietnē <a href="https://www.jelgava.lv" target="_blank" rel="noreferrer">jelgava.lv</a> un sociālajos tīklos – sabiedrības informēšanas nolūkos. <em>*</em>{fieldErrors.photoConsent && <small className="checkbox-error" id="photoConsent-error">{fieldErrors.photoConsent}</small>}</span>
                 </label>
 
                 <label className={`checkbox-row ${fieldErrors.informationConfirmed ? "checkbox-row--error" : ""}`}>

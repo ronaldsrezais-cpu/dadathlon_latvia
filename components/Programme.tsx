@@ -1,6 +1,6 @@
 const activities = [
   { name: "Vieglatlētika", icon: "🏃" },
-  { name: "Tēvu un dēlu laivu izbrauciens", icon: "🚣" },
+  { name: "Laivu izbrauciens", icon: "🚣" },
   { name: "Basketbola metieni", icon: "🏀" },
   { name: "Hokejs", icon: "🏒" },
   { name: "Spēka stacija", icon: "💪" },
@@ -8,7 +8,6 @@ const activities = [
   { name: "Futbols", icon: "⚽" },
   { name: "Sporta tūrisms", icon: "🥾" },
   { name: "Tekvondo", icon: "🥋" },
-  { name: "Nūjošana", icon: "🚶" },
   { name: "Ķer un servē", icon: "🏐" },
   { name: "Zumba", icon: "💃" },
   { name: "Šķēršļu josla", icon: "🚧" },
