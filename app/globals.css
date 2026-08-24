@@ -724,3 +724,21 @@ select[aria-invalid="true"] {
   .virtual-raceid-card { flex-direction: column; align-items: stretch; padding: 22px 18px; border-radius: 16px; }
   .virtual-primary-link { width: 100%; }
 }
+
+/* Virtual challenge footer: only coordinator and partner are shown. */
+.organisation-section--virtual {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+@media (max-width: 860px) {
+  .organisation-section--virtual {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .organisation-section--virtual .organisation-item:last-child {
+    grid-column: auto;
+  }
+}
+@media (max-width: 620px) {
+  .organisation-section--virtual {
+    grid-template-columns: 1fr;
+  }
+}

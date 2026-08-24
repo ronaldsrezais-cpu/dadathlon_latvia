@@ -104,7 +104,7 @@ export default function VirtualChallengePage() {
         </div>
       </main>
 
-      <Footer />
+      <Footer hideOrganizer hideEventInfo />
     </>
   );
 }
