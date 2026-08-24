@@ -24,6 +24,7 @@ Next.js reģistrācijas vietne pasākumam **Dadathlon Latvija**, kas notiks **20
 - trīs obligāti apstiprinājumi, tostarp informācija par fotografēšanu un filmēšanu;
 - organizatoru, partnera un ES līdzfinansējuma logotipi un atruna;
 - mobilajām ierīcēm pielāgots dizains Dadathlon krāsās.
+- atsevišķa virtuālā izaicinājuma apakšlapa `/virtualais_izaicinajums` ar RaceID saiti un vietu apstiprinātajam izaicinājuma nolikumam.
 
 ## Ko redz ģimene pēc reģistrācijas
 
@@ -149,6 +150,7 @@ Ieteicams veikt vienu pilnu testa reģistrāciju ar savu e-pasta adresi un pārb
 ## Galvenie faili
 
 - `app/page.tsx` — reģistrācijas sākumlapa;
+- `app/virtualais_izaicinajums/page.tsx` — virtuālā Dadathlon izaicinājuma apakšlapa;
 - `app/edit/page.tsx` — pieteikuma labošana;
 - `components/RegistrationForm.tsx` — formas un veiksmīgā loga loģika;
 - `components/SizeGuide.tsx` — izmēru tabulas;

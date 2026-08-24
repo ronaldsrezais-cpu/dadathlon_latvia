@@ -20,7 +20,11 @@ export default function EventHeader({ compact = false }: { compact?: boolean }) 
             <p className="eyebrow">Tēviem un bērniem</p>
             <h1>{compact ? "Pieteikuma labošana" : "Dadathlon Latvija"}</h1>
             <p className="event-meta">12. septembris · 10:30–13:00 · Pasta sala, Jelgava</p>
-            {!compact && <a href="#registracija" className="header-cta">Reģistrēties</a>}
+            {!compact && (
+              <div className="header-actions">
+                <a href="#registracija" className="header-cta">Reģistrēties</a>
+              </div>
+            )}
           </div>
         </div>
       </header>

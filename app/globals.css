@@ -622,3 +622,105 @@ select[aria-invalid="true"] {
   font-size: .8rem;
   font-weight: 800;
 }
+
+/* Main header actions + virtual challenge */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.header-actions .header-cta { margin-top: 0; }
+.header-cta--virtual {
+  background: rgba(255,255,255,.10);
+  border-color: rgba(255,255,255,.42);
+  box-shadow: none;
+}
+.header-cta--virtual::after { content: "→"; }
+.header-cta--virtual:hover {
+  background: rgba(255,255,255,.17);
+  box-shadow: 0 12px 28px rgba(0,0,0,.14);
+}
+.header-cta--raceid::after { content: "↗"; }
+
+.virtual-main { padding: 42px 0 54px; }
+.virtual-shell { display: grid; gap: 24px; }
+.virtual-intro-card,
+.virtual-card,
+.virtual-raceid-card {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+.virtual-intro-card { padding: clamp(28px, 5vw, 48px); }
+.virtual-intro-card h2,
+.virtual-card h2,
+.virtual-raceid-card h2 {
+  margin: 0 0 12px;
+  color: var(--navy-dark);
+  letter-spacing: -.03em;
+}
+.virtual-intro-card h2 { font-size: clamp(1.8rem, 4vw, 2.7rem); }
+.virtual-intro-card > p:not(.section-kicker) {
+  max-width: 830px;
+  margin: 0 0 24px;
+  color: #46536a;
+  font-size: 1.04rem;
+  line-height: 1.75;
+}
+.virtual-primary-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  padding: 13px 22px;
+  text-decoration: none;
+}
+.virtual-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.virtual-card { position: relative; padding: 30px; }
+.virtual-card-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 18px;
+  border-radius: 15px;
+  background: var(--blue-soft);
+  font-size: 1.55rem;
+}
+.virtual-card p { color: #566278; }
+.virtual-placeholder {
+  margin: 0;
+  padding: 16px 18px;
+  border-left: 4px solid var(--red);
+  border-radius: 0 12px 12px 0;
+  background: #fff6f8;
+  line-height: 1.65;
+}
+.virtual-steps { margin: 0; padding-left: 22px; color: #46536a; }
+.virtual-steps li { margin: 0 0 13px; padding-left: 5px; line-height: 1.6; }
+.virtual-steps li:last-child { margin-bottom: 0; }
+.virtual-raceid-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 26px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #fff 0%, #f2f6ff 100%);
+}
+.virtual-raceid-card p { margin: 0; color: var(--muted); }
+
+@media (max-width: 860px) {
+  .virtual-grid { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .header-actions { justify-content: center; width: 100%; }
+  .header-actions .header-cta { width: 100%; }
+  .virtual-main { padding: 24px 0 42px; }
+  .virtual-intro-card,
+  .virtual-card { padding: 22px 18px; border-radius: 16px; }
+  .virtual-raceid-card { flex-direction: column; align-items: stretch; padding: 22px 18px; border-radius: 16px; }
+  .virtual-primary-link { width: 100%; }
+}
