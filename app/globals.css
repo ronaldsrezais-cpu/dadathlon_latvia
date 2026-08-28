@@ -742,3 +742,252 @@ select[aria-invalid="true"] {
     grid-template-columns: 1fr;
   }
 }
+
+/* Virtual challenge rules and prize draw summary */
+.virtual-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin-bottom: 22px;
+}
+.virtual-badges span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 7px 12px;
+  border: 1px solid #dbe5f5;
+  border-radius: 999px;
+  background: #f4f7fd;
+  color: var(--navy-dark);
+  font-size: .82rem;
+  font-weight: 800;
+}
+.virtual-inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+.virtual-text-link {
+  color: var(--navy);
+  font-weight: 800;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+.virtual-section-card,
+.virtual-rules-section,
+.virtual-support-card {
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: white;
+  box-shadow: var(--shadow);
+}
+.virtual-section-card { padding: 30px; }
+.virtual-section-heading,
+.virtual-rules-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 22px;
+}
+.virtual-section-heading h2,
+.virtual-rules-heading h2,
+.virtual-support-card h2 {
+  margin: 0;
+  color: var(--navy-dark);
+  letter-spacing: -.03em;
+}
+.virtual-section-heading > p {
+  max-width: 330px;
+  margin: 0;
+  color: var(--muted);
+  text-align: right;
+}
+.virtual-activity-row {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+.virtual-activity-pill {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px;
+  border: 1px solid #dce5f3;
+  border-radius: 14px;
+  background: #f8faff;
+  color: var(--navy-dark);
+}
+.virtual-activity-pill span { font-size: 1.35rem; }
+.virtual-distance-table-wrap {
+  overflow-x: auto;
+  border: 1px solid #dce4ef;
+  border-radius: 15px;
+}
+.virtual-distance-table {
+  width: 100%;
+  min-width: 610px;
+  border-collapse: collapse;
+  color: #3f4b61;
+}
+.virtual-distance-table th,
+.virtual-distance-table td {
+  padding: 15px 18px;
+  border-bottom: 1px solid #e6ebf3;
+  text-align: left;
+}
+.virtual-distance-table thead th {
+  background: var(--navy-dark);
+  color: white;
+  font-size: .84rem;
+  letter-spacing: .02em;
+}
+.virtual-distance-table tbody th {
+  color: var(--navy-dark);
+  font-weight: 900;
+}
+.virtual-distance-table tbody tr:last-child th,
+.virtual-distance-table tbody tr:last-child td { border-bottom: 0; }
+.virtual-soft-note {
+  margin: 18px 0 0;
+  padding: 15px 17px;
+  border-radius: 13px;
+  background: #f4f7fd;
+  color: #566278;
+  line-height: 1.6;
+}
+.virtual-rules-section { padding: clamp(26px, 4vw, 38px); }
+.virtual-rules-download {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 10px 16px;
+  border: 1px solid #ced9ea;
+  border-radius: 12px;
+  color: var(--navy-dark);
+  background: #f7f9fd;
+  font-weight: 850;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.virtual-rules-download:hover { background: #edf2fa; }
+.virtual-rules-intro {
+  margin: -6px 0 24px;
+  padding: 15px 17px;
+  border-left: 4px solid var(--red);
+  border-radius: 0 12px 12px 0;
+  background: #fff6f8;
+  color: #4f5c72;
+  line-height: 1.65;
+}
+.virtual-rules-intro a { color: var(--navy); font-weight: 800; }
+.virtual-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+.virtual-rule-card {
+  padding: 24px;
+  border: 1px solid #dde5f1;
+  border-radius: 17px;
+  background: #fbfcff;
+}
+.virtual-rule-card h3 {
+  margin: 0 0 10px;
+  color: var(--navy-dark);
+  font-size: 1.16rem;
+  letter-spacing: -.02em;
+}
+.virtual-rule-card p { margin: 0; color: #556177; line-height: 1.65; }
+.virtual-rule-card p + p { margin-top: 12px; }
+.virtual-rule-card--accent { grid-column: span 2; background: linear-gradient(135deg, #fff 0%, #f7f9ff 100%); }
+.virtual-rule-card--prize {
+  grid-column: span 2;
+  border-color: #f1c9d2;
+  background: linear-gradient(135deg, #fff 0%, #fff5f7 100%);
+}
+.virtual-checklist {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #4c586d;
+}
+.virtual-checklist li {
+  position: relative;
+  margin: 0 0 11px;
+  padding-left: 28px;
+  line-height: 1.58;
+}
+.virtual-checklist li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--red);
+  font-weight: 950;
+}
+.virtual-checklist li:last-child { margin-bottom: 0; }
+.virtual-privacy-note {
+  margin-top: 18px !important;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #eef5ff;
+  color: #43536c !important;
+  font-size: .92rem;
+}
+.virtual-prize-number {
+  margin-bottom: 12px !important;
+  color: var(--red) !important;
+  font-size: 1.35rem;
+  font-weight: 950;
+}
+.virtual-info-grid .virtual-card p { line-height: 1.65; }
+.virtual-support-card {
+  display: grid;
+  grid-template-columns: .8fr 1.5fr;
+  gap: 28px;
+  align-items: center;
+  padding: 28px 32px;
+}
+.virtual-support-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+.virtual-support-columns > div {
+  display: grid;
+  gap: 7px;
+  padding: 16px 18px;
+  border-radius: 13px;
+  background: #f5f7fb;
+  color: #4b5870;
+}
+.virtual-support-columns strong { color: var(--navy-dark); }
+.virtual-support-columns a { color: var(--navy); font-weight: 800; overflow-wrap: anywhere; }
+
+@media (max-width: 860px) {
+  .virtual-section-heading,
+  .virtual-rules-heading { align-items: flex-start; flex-direction: column; }
+  .virtual-section-heading > p { text-align: left; }
+  .virtual-rule-grid { grid-template-columns: 1fr; }
+  .virtual-rule-card--accent,
+  .virtual-rule-card--prize { grid-column: auto; }
+  .virtual-support-card { grid-template-columns: 1fr; }
+}
+@media (max-width: 620px) {
+  .virtual-badges { gap: 7px; }
+  .virtual-badges span { width: 100%; justify-content: center; }
+  .virtual-inline-actions { align-items: stretch; flex-direction: column; }
+  .virtual-inline-actions .virtual-primary-link { width: 100%; }
+  .virtual-text-link { text-align: center; }
+  .virtual-section-card,
+  .virtual-rules-section,
+  .virtual-support-card { padding: 22px 18px; border-radius: 16px; }
+  .virtual-activity-row { grid-template-columns: 1fr; }
+  .virtual-rule-card { padding: 20px 17px; }
+  .virtual-rules-download { width: 100%; }
+  .virtual-support-columns { grid-template-columns: 1fr; }
+}
