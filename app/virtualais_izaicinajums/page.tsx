@@ -4,7 +4,7 @@ import Footer from "@/components/Footer";
 
 const RACE_ID_URL = "https://raceid.com/en/races/14911/about";
 const RACE_ID_RULES_URL = "https://raceid.com/en/races/14911/information";
-const FULL_RULES_URL = "/Global_Dadathlon_2026_Latvijas_balvas_izlozes_nolikums.docx";
+const FULL_RULES_URL = "/Global_Dadathlon_2026_Latvijas_balvas_izlozes_nolikums.pdf";
 
 export default function VirtualChallengePage() {
   return (
@@ -117,7 +117,7 @@ export default function VirtualChallengePage() {
                 <h2 id="rules-title">Galvenais par Latvijas balvu izlozi</h2>
               </div>
               <a href={FULL_RULES_URL} className="virtual-rules-download" download>
-                Lejupielādēt pilno nolikumu ↓
+                Lejupielādēt gala nolikumu (PDF) ↓
               </a>
             </div>
             <p className="virtual-rules-intro">
