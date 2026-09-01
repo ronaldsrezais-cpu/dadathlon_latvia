@@ -162,14 +162,15 @@ export default function VirtualChallengePage() {
               <article className="virtual-rule-card virtual-rule-card--prize">
                 <div className="virtual-card-icon" aria-hidden="true">🎁</div>
                 <h3>Latvijas balvas</h3>
-                <p className="virtual-prize-number">3 × ģimenes balva</p>
+                <p className="virtual-prize-number">3 ģimenes · 1 balva katrā līmenī</p>
                 <p>
-                  Tiks izlozētas <strong>trīs vienādas balvas</strong>. Katrā balvā — <strong>4 Līvu Akvaparka dienas biļetes</strong>.
-                  Vismaz vienam no četriem balvas izmantotājiem jābūt bērnam, ar kuru uzvarētājs piedalījies izaicinājumā.
+                  <strong>Galvenā balva ir visas dienas apmeklējums Līvu Akvaparkā trim (3) ģimenēm</strong>, katrai ne vairāk kā četru (4) personu sastāvā.
+                  Vismaz vienam no balvas izmantotājiem jābūt bērnam, ar kuru uzvarētājs piedalījies izaicinājumā.
                 </p>
                 <p>
-                  Uzvarētājus nosaka nejaušā elektroniskā izlozē ne vēlāk kā piecu darbdienu laikā pēc 30. septembra termiņa.
-                  Izvēlētais līmenis un sportiskais rezultāts izredzes izlozē neietekmē.
+                  Viena (1) balva tiek izlozēta katrā izaicinājuma līmenī — <strong>Bronze</strong>, <strong>Silver</strong> un <strong>Gold</strong> —
+                  starp attiecīgā līmeņa dalībniekiem, kuri izpildījuši nolikuma prasības. Katrā līmenī uzvarētāju nosaka nejaušā elektroniskā izlozē
+                  ne vēlāk kā piecu darbdienu laikā pēc 30. septembra termiņa. Sportiskais rezultāts viena līmeņa ietvaros izredzes izlozē neietekmē.
                 </p>
               </article>
             </div>

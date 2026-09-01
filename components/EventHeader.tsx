@@ -16,6 +16,11 @@ export default function EventHeader({ compact = false }: { compact?: boolean }) 
               className="brand-logo"
             />
           </Link>
+          {!compact && (
+            <Link href="/virtualais_izaicinajums" className="virtual-corner-link">
+              Virtuālais izaicinājums
+            </Link>
+          )}
           <div className="header-copy">
             <p className="eyebrow">Tēviem un bērniem</p>
             <h1>{compact ? "Pieteikuma labošana" : "Dadathlon Latvija"}</h1>
