@@ -279,6 +279,25 @@ fieldset { min-width: 0; padding: 0; border: 0; }
 .shirt-status--closed .registration-counter--shirts { background: var(--red); }
 .shirt-status--closed > div:first-child strong { color: var(--red-dark); }
 
+.registration-total-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 22px;
+  padding: 16px 20px;
+  border: 1px solid #cbd8eb;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #ffffff 0%, #f2f6ff 100%);
+  box-shadow: 0 12px 30px rgba(7, 52, 130, .08);
+  color: var(--navy-dark);
+  text-align: left;
+}
+.registration-total-status__icon { font-size: 1.8rem; line-height: 1; }
+.registration-total-status > div { display: flex; align-items: baseline; gap: 10px; }
+.registration-total-status span:not(.registration-total-status__icon) { color: var(--muted); font-size: .84rem; font-weight: 800; }
+.registration-total-status strong { color: var(--navy); font-size: 1.65rem; line-height: 1; }
+
 .section-heading { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 28px; }
 .section-heading > span { display: grid; place-items: center; width: 38px; height: 38px; flex: 0 0 38px; border-radius: 50%; background: var(--navy); color: white; font-weight: 800; }
 .section-heading h2 { margin-bottom: 3px; }
@@ -1025,4 +1044,105 @@ select[aria-invalid="true"] {
   .virtual-rule-card { padding: 20px 17px; }
   .virtual-rules-download { width: 100%; }
   .virtual-support-columns { grid-template-columns: 1fr; }
+}
+
+
+/* Mobile-first polish for the main registration page and virtual challenge */
+html, body { max-width: 100%; overflow-x: hidden; }
+img, svg { max-width: 100%; }
+.header-copy, .programme-card, .form-card, .child-card, .virtual-card, .virtual-section-card, .virtual-rules-section { min-width: 0; }
+.header-copy p, .programme-card p, .form-card p, .checkbox-row span, .virtual-main p, .virtual-main li, .about-project p { overflow-wrap: anywhere; }
+.table-scroll, .virtual-distance-table-wrap { -webkit-overflow-scrolling: touch; scrollbar-width: thin; }
+
+@media (max-width: 620px) {
+  body { font-size: 15px; }
+  .site-header .header-inner { padding-top: 58px; }
+  .virtual-corner-link {
+    min-height: 40px;
+    top: 9px;
+    right: 0;
+    padding: 8px 11px;
+    font-size: .70rem;
+  }
+  .brand-link { width: min(180px, 58vw); padding: 10px; border-radius: 16px; }
+  .header-copy { width: 100%; }
+  .header-copy h1 { font-size: clamp(2rem, 10vw, 2.55rem); line-height: 1.02; }
+  .event-meta { font-size: .96rem; line-height: 1.45; }
+  .header-cta { width: 100%; min-height: 50px; margin-top: 18px; padding: 11px 18px; }
+  .event-strip-grid > div { grid-template-columns: 34px 1fr; column-gap: 10px; }
+  .event-strip-grid span { font-size: 1.35rem; }
+  .programme-heading { padding-top: 20px; padding-bottom: 16px; }
+  .programme-block { padding-top: 20px; padding-bottom: 20px; }
+  .programme-time strong { font-size: 1.22rem; }
+  .programme-time span { font-size: 1rem; }
+  .programme-invitation { margin-bottom: 18px; padding: 12px 14px; font-size: .94rem; }
+  .activity-item { min-height: 50px; }
+  .schedule-item { grid-template-columns: 68px minmax(0,1fr); gap: 12px; }
+  .schedule-time { min-height: 48px; font-size: 1rem; }
+  .medal-note { gap: 10px; }
+  .shirt-status { flex-direction: column; gap: 15px; }
+  .shirt-status > div:first-child { width: 100%; }
+  .registration-counters { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .registration-total-status { justify-content: flex-start; padding: 14px 16px; border-radius: 15px; }
+  .registration-total-status > div { flex: 1; justify-content: space-between; }
+  .registration-total-status strong { font-size: 1.55rem; }
+  .section-heading { gap: 12px; margin-bottom: 22px; }
+  .section-heading > span { width: 34px; height: 34px; flex-basis: 34px; }
+  .field-group { margin-bottom: 18px; }
+  input, select { min-height: 50px; font-size: 16px; }
+  .child-card { padding: 17px 14px; border-radius: 14px; }
+  .child-card-header { align-items: flex-start; gap: 10px; }
+  .remove-button { flex: 0 0 auto; min-height: 40px; }
+  .size-reference { border-radius: 11px; }
+  .size-reference-title { font-size: .79rem; }
+  .size-table { font-size: .72rem; }
+  .size-table--adult { min-width: 660px; }
+  .size-table--child { min-width: 330px; }
+  .checkbox-row { grid-template-columns: 24px minmax(0,1fr); gap: 10px; }
+  .checkbox-row input { width: 22px; height: 22px; min-height: 22px; }
+  .primary-button, .secondary-button, .danger-button { min-height: 48px; }
+  .site-footer { padding-top: 32px; }
+  .organisation-logo-card { min-height: 110px; padding: 15px; }
+  .organisation-logo { height: 74px; }
+  .organisation-logo--daddyhood { height: 86px; }
+  .eu-section { gap: 18px; padding: 22px 0; }
+  .eu-logo-card { padding: 12px; }
+  .eu-disclaimer { font-size: .75rem; }
+  .about-project { margin-top: 22px; padding-top: 22px; }
+
+  .site-header--compact .header-inner { padding-top: 26px; }
+  .virtual-main { padding-top: 20px; }
+  .virtual-intro-card h2 { font-size: 1.85rem; }
+  .virtual-intro-card > p:not(.section-kicker) { font-size: .98rem; line-height: 1.65; }
+  .virtual-badges span { min-height: 38px; }
+  .virtual-distance-table-wrap { position: relative; margin-right: -2px; }
+  .virtual-distance-table { min-width: 560px; font-size: .88rem; }
+  .virtual-distance-table th, .virtual-distance-table td { padding: 12px 13px; }
+  .virtual-rules-heading { gap: 15px; }
+  .virtual-rule-card h3 { font-size: 1.08rem; }
+  .virtual-rule-card p, .virtual-checklist { font-size: .94rem; }
+  .virtual-support-columns > div { padding: 14px; }
+}
+
+@media (max-width: 420px) {
+  .shell, .narrow-shell { width: calc(100% - 16px); }
+  .site-header .header-inner { padding-top: 54px; }
+  .virtual-corner-link { right: 1px; font-size: .67rem; }
+  .event-strip-grid > div { padding: 12px 13px; }
+  .programme-heading, .programme-block, .programme-schedule, .medal-note { padding-left: 14px; padding-right: 14px; }
+  .programme-schedule { padding-bottom: 20px; }
+  .schedule-item { grid-template-columns: 62px minmax(0,1fr); padding: 12px; }
+  .form-card { padding: 19px 14px; }
+  .shirt-status { padding: 15px 14px; }
+  .registration-counters { grid-template-columns: 1fr; }
+  .registration-counter { min-height: 56px; }
+  .registration-total-status { gap: 10px; }
+  .registration-total-status__icon { font-size: 1.55rem; }
+  .registration-total-status > div { align-items: center; }
+  .registration-total-status span:not(.registration-total-status__icon) { font-size: .78rem; }
+  .registration-total-status strong { font-size: 1.4rem; }
+  .child-card { padding: 15px 12px; }
+  .success-modal { padding-left: 15px; padding-right: 15px; }
+  .virtual-intro-card, .virtual-card, .virtual-section-card, .virtual-rules-section, .virtual-support-card { padding-left: 15px; padding-right: 15px; }
+  .virtual-distance-table { min-width: 520px; }
 }

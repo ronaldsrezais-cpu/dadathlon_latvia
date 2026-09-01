@@ -335,31 +335,39 @@ export default function RegistrationForm({ mode = "register", initialCode = "" }
           ) : (
             <form onSubmit={handleSubmit} noValidate>
               {mode === "register" && (
-                <section className={`shirt-status ${statusLoaded && !status.shirtsAvailable ? "shirt-status--closed" : ""}`}>
-                  <div>
-                    <span className="shirt-icon">👕</span>
+                statusLoaded && !status.shirtsAvailable ? (
+                  <section className="registration-total-status" aria-label="Reģistrēto komandu skaits">
+                    <span className="registration-total-status__icon" aria-hidden="true">👨‍👧‍👦</span>
                     <div>
-                      <strong>{statusLoaded && !status.shirtsAvailable ? "T-kreklu vietas ir aizpildītas" : "Lieliska iespēja agrajiem putniem!"}</strong>
-                      <p>
-                        {!statusLoaded
-                          ? "Pārbauda T-kreklu pieejamību…"
-                          : status.shirtsAvailable
-                            ? "Pirmajām 150 ģimenēm, kas reģistrēsies, tiks nodrošināti pasākuma T-krekli visiem pieteiktajiem komandas dalībniekiem."
-                            : "Reģistrācija turpinās, bet T-kreklu izmēri vairs nav jānorāda."}
-                      </p>
+                      <span>Reģistrētās komandas</span>
+                      <strong>{status.totalRegistrations}</strong>
                     </div>
-                  </div>
-                  <div className="registration-counters" aria-label="Reģistrācijas skaitītāji">
-                    <div className="registration-counter registration-counter--total">
-                      <span>Kopā reģistrētas komandas</span>
-                      <strong>{statusLoaded ? status.totalRegistrations : "–"}</strong>
+                  </section>
+                ) : (
+                  <section className="shirt-status">
+                    <div>
+                      <span className="shirt-icon">👕</span>
+                      <div>
+                        <strong>Lieliska iespēja agrajiem putniem!</strong>
+                        <p>
+                          {!statusLoaded
+                            ? "Pārbauda T-kreklu pieejamību…"
+                            : "Pirmajām 150 ģimenēm, kas reģistrēsies, tiks nodrošināti pasākuma T-krekli visiem pieteiktajiem komandas dalībniekiem."}
+                        </p>
+                      </div>
                     </div>
-                    <div className="registration-counter registration-counter--shirts">
-                      <span>T-kreklu vietas</span>
-                      <strong>{statusLoaded ? Math.min(status.shirtSlotsTaken, 150) : "–"} / 150</strong>
+                    <div className="registration-counters" aria-label="Reģistrācijas skaitītāji">
+                      <div className="registration-counter registration-counter--total">
+                        <span>Reģistrētās komandas</span>
+                        <strong>{statusLoaded ? status.totalRegistrations : "–"}</strong>
+                      </div>
+                      <div className="registration-counter registration-counter--shirts">
+                        <span>T-kreklu vietas</span>
+                        <strong>{statusLoaded ? Math.min(status.shirtSlotsTaken, 150) : "–"} / 150</strong>
+                      </div>
                     </div>
-                  </div>
-                </section>
+                  </section>
+                )
               )}
 
               <section className="form-card intro-card">
