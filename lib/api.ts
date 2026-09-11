@@ -27,12 +27,15 @@ export async function getRegistrationStatus(): Promise<RegistrationStatus> {
   if (isDemoMode()) {
     const items = readDemoRegistrations();
     const activeItems = items.filter((item) => item.status !== "cancelled");
-    const shirtSlotsTaken = activeItems.filter((item) => item.shirtEligible).length;
+    const highestAssignedShirtSlot = items.reduce((maxSlot, item) => {
+      if (!item.shirtEligible) return maxSlot;
+      return Math.max(maxSlot, Number(item.shirtSlot) || 0);
+    }, 0);
     return {
       ok: true,
       totalRegistrations: activeItems.length,
-      shirtSlotsTaken,
-      shirtsAvailable: shirtSlotsTaken < 150,
+      shirtSlotsTaken: Math.min(highestAssignedShirtSlot, 150),
+      shirtsAvailable: highestAssignedShirtSlot < 150,
       shirtLimit: 150,
     };
   }
@@ -65,24 +68,12 @@ export async function submitRegistration(payload: RegistrationPayload): Promise<
     const registrations = readDemoRegistrations();
 
     if (payload.action === "register") {
-      const activeShirtRegistrations = registrations.filter(
-        (item) => item.status !== "cancelled" && item.shirtEligible,
-      );
-      const shirtEligible = activeShirtRegistrations.length < 150;
-      const usedSlots = new Set(
-        activeShirtRegistrations
-          .map((item) => Number(item.shirtSlot) || 0)
-          .filter((slot) => slot >= 1 && slot <= 150),
-      );
-      let nextShirtSlot: number | null = null;
-      if (shirtEligible) {
-        for (let slot = 1; slot <= 150; slot += 1) {
-          if (!usedSlots.has(slot)) {
-            nextShirtSlot = slot;
-            break;
-          }
-        }
-      }
+      const highestAssignedShirtSlot = registrations.reduce((maxSlot, item) => {
+        if (!item.shirtEligible) return maxSlot;
+        return Math.max(maxSlot, Number(item.shirtSlot) || 0);
+      }, 0);
+      const nextShirtSlot = highestAssignedShirtSlot + 1;
+      const shirtEligible = nextShirtSlot <= 150;
       const code = `DAD-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
       const item = {
         ...payload,

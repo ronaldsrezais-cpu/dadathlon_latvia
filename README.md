@@ -163,3 +163,13 @@ Ieteicams veikt vienu pilnu testa reģistrāciju ar savu e-pasta adresi un pārb
 ## T-kreklu skaitītāja loģika
 
 T-kreklu skaitītājs rāda faktisko aktīvo ģimeņu skaitu, kurām ir piešķirti T-krekli (maksimums 150). Atsaukts vai izdzēsts pieteikums vairs netiek ieskaitīts limitā, un atbrīvoto T-krekla vietas numuru var saņemt nākamā reģistrētā ģimene.
+
+
+### T-kreklu limita loģika
+
+T-krekli tiek rezervēti tikai pirmajām 150 ģimenēm, kas reģistrējas. Ja kāda no šīm ģimenēm vēlāk atsauc dalību, tās T-krekla vieta netiek atvērta un netiek piešķirta citai ģimenei. Pēc 150. piešķirtās vietas reģistrācija turpinās bez T-kreklu izmēru izvēles; publiski paliek redzams kopējais aktīvo reģistrēto komandu skaits.
+
+
+### Tiešsaistes reģistrācija noslēgta
+
+Galvenajā lapā reģistrācijas formas vietā tiek rādīts paziņojums par tiešsaistes reģistrācijas noslēgšanu un iespēju pieteikties pasākuma reģistrācijas teltī. Apps Script konfigurācijā `REGISTRATION_OPEN: false` bloķē arī jaunus `register` pieprasījumus no vecām/kešotām lapas versijām. Esošo pieteikumu labošana un atsaukšana turpina darboties.

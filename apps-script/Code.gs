@@ -14,6 +14,7 @@ const CONFIG = {
   REPORT_SHEET_NAME: 'Reģistrētās ģimenes',
   CHILD_SHEET_NAME: 'Bērni',
   SHIRT_LIMIT: 150,
+  REGISTRATION_OPEN: false,
   SITE_URL: 'https://dadathlonlatvija.com',
   EVENT_NAME: 'Dadathlon Latvija',
   EVENT_DATE: '2026. gada 12. septembrī',
@@ -115,7 +116,15 @@ function doPost(e) {
     const payload = parsePayload_(e);
     const action = String(payload.action || '').toLowerCase();
 
-    if (action === 'register') return jsonResponse_(register_(payload));
+    if (action === 'register') {
+      if (!CONFIG.REGISTRATION_OPEN) {
+        return jsonResponse_({
+          ok: false,
+          message: 'Tiešsaistes reģistrācija ir noslēgusies. Reģistrēties būs iespējams uz vietas pasākuma reģistrācijas teltī.'
+        });
+      }
+      return jsonResponse_(register_(payload));
+    }
     if (action === 'update') return jsonResponse_(updateRegistration_(payload));
     if (action === 'cancel') return jsonResponse_(cancelRegistration_(payload));
 
@@ -291,15 +300,22 @@ function getStatus_() {
   const activeRows = rows.filter((row) => String(row[COL.STATUS - 1]).toLowerCase() === 'active');
   const totalRegistrations = activeRows.length;
 
-  // T-kreklu skaitītājs rāda faktisko AKTĪVO ģimeņu skaitu, kurām T-krekli ir piešķirti.
-  // Atsaukts vai izdzēsts pieteikums vairs netiek ieskaitīts 150 vietu limitā.
-  const shirtSlotsTaken = activeRows.filter((row) => toBoolean_(row[COL.SHIRT_ELIGIBLE - 1])).length;
+  // T-kreklu vietas tiek piešķirtas tikai pirmajām 150 ģimenēm, kas reģistrējās.
+  // Atsaukts pieteikums NEATBRĪVO T-krekla vietu nākamajai ģimenei.
+  // Tādēļ pieejamību nosakām pēc lielākā jebkad piešķirtā ShirtSlot, nevis aktīvo pieteikumu skaita.
+  const highestAssignedShirtSlot = rows.reduce((maxSlot, row) => {
+    if (!toBoolean_(row[COL.SHIRT_ELIGIBLE - 1])) return maxSlot;
+    const slot = Number(row[COL.SHIRT_SLOT - 1]) || 0;
+    return Math.max(maxSlot, slot);
+  }, 0);
+
+  const shirtSlotsTaken = Math.min(highestAssignedShirtSlot, CONFIG.SHIRT_LIMIT);
 
   return {
     ok: true,
     totalRegistrations,
-    shirtSlotsTaken: Math.min(shirtSlotsTaken, CONFIG.SHIRT_LIMIT),
-    shirtsAvailable: shirtSlotsTaken < CONFIG.SHIRT_LIMIT,
+    shirtSlotsTaken,
+    shirtsAvailable: highestAssignedShirtSlot < CONFIG.SHIRT_LIMIT,
     shirtLimit: CONFIG.SHIRT_LIMIT,
   };
 }
@@ -503,27 +519,16 @@ function findRegistrationRow_(sheet, code) {
 
 function getNextShirtSlot_(sheet) {
   const rows = getDataRows_(sheet);
-  const activeShirtRows = rows.filter((row) =>
-    String(row[COL.STATUS - 1]).toLowerCase() === 'active' &&
-    toBoolean_(row[COL.SHIRT_ELIGIBLE - 1])
-  );
 
-  // Ja jau ir 150 aktīvas ģimenes ar T-krekliem, atgriežam vērtību virs limita.
-  if (activeShirtRows.length >= CONFIG.SHIRT_LIMIT) return CONFIG.SHIRT_LIMIT + 1;
+  // T-kreklu vietas ir vēsturiskas: atsaukta pieteikuma vieta netiek piešķirta atkārtoti.
+  // Nākamais numurs vienmēr ir par 1 lielāks par lielāko jebkad piešķirto ShirtSlot.
+  const highestAssignedShirtSlot = rows.reduce((maxSlot, row) => {
+    if (!toBoolean_(row[COL.SHIRT_ELIGIBLE - 1])) return maxSlot;
+    const slot = Number(row[COL.SHIRT_SLOT - 1]) || 0;
+    return Math.max(maxSlot, slot);
+  }, 0);
 
-  // Atsaukta vai izdzēsta pieteikuma vietu drīkst izmantot nākamā aktīvā ģimene.
-  // Izvēlamies pirmo brīvo vietas numuru no 1 līdz 150.
-  const usedSlots = new Set(
-    activeShirtRows
-      .map((row) => Number(row[COL.SHIRT_SLOT - 1]) || 0)
-      .filter((slot) => slot >= 1 && slot <= CONFIG.SHIRT_LIMIT)
-  );
-
-  for (let slot = 1; slot <= CONFIG.SHIRT_LIMIT; slot++) {
-    if (!usedSlots.has(slot)) return slot;
-  }
-
-  return CONFIG.SHIRT_LIMIT + 1;
+  return highestAssignedShirtSlot + 1;
 }
 
 function createUniqueCode_(sheet) {
