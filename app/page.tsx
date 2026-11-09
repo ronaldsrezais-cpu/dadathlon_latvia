@@ -1,14 +1,14 @@
 import EventHeader from "@/components/EventHeader";
 import Footer from "@/components/Footer";
 import Programme from "@/components/Programme";
-import RegistrationClosed from "@/components/RegistrationClosed";
+import RegistrationForm from "@/components/RegistrationForm";
 
 export default function HomePage() {
   return (
     <>
       <EventHeader />
       <Programme />
-      <RegistrationClosed />
+      <RegistrationForm />
       <Footer />
     </>
   );
