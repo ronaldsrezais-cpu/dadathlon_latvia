@@ -14,7 +14,7 @@ const CONFIG = {
   REPORT_SHEET_NAME: 'Reģistrētās ģimenes',
   CHILD_SHEET_NAME: 'Bērni',
   SHIRT_LIMIT: 150,
-  REGISTRATION_OPEN: false,
+  REGISTRATION_OPEN: true,
   SITE_URL: 'https://dadathlonlatvija.com',
   EVENT_NAME: 'Dadathlon Latvija',
   EVENT_DATE: '2026. gada 12. septembrī',
